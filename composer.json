@@ -1,0 +1,27 @@
+{
+    "name": "feodorpranju/api-orm",
+    "description": "Field and Model contracts and basic converters",
+    "authors": [
+        {
+            "name": "Fiodor Pranju",
+            "email": "feodorpranju1@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/collections": "^10.4",
+        "illuminate/contracts": "^10.4",
+        "phpunit/phpunit": "^10.0",
+        "nesbot/carbon": "^2.66",
+        "illuminate/config": "^10.4",
+        "illuminate/support": "^10.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Feodorpranju\\ApiOrm\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    }
+}
