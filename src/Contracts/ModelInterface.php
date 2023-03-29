@@ -23,19 +23,11 @@ interface ModelInterface
      */
     public static function entity(): string;
 
-
     /**
+     * Creates query builder object for current model
      *
-     * @return array
+     * @param array|null $fields
+     * @return QueryBuilderInterface
      */
-    public function getFields(): array;
-
-
-    /**
-     * Gets model field by name
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function getField(string $name): mixed;
+    public static function select(array $fields = null): QueryBuilderInterface;
 }
