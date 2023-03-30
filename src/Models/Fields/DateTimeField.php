@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
 use Illuminate\Support\Collection;
 
-class DateTime extends AbstractField
+class DateTimeField extends AbstractField
 {
     protected static array $stringFormats = [
         "datetime" => "d.m.Y H:i:s",
@@ -26,7 +26,7 @@ class DateTime extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): Carbon|Collection
+    protected function toUsable(mixed $value = null): Carbon
     {
         return new Carbon($value ?? $this->value);
     }
@@ -34,7 +34,7 @@ class DateTime extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string|Collection
+    protected function toString(mixed $value = null): string
     {
         return $this->toUsable($value ?? $this->value)->format(static::$stringFormats[$this->settings->type()->value] ?? "c");
     }
@@ -42,7 +42,7 @@ class DateTime extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): string|Collection
+    protected function toApi(mixed $value = null): string
     {
         return $this->toUsable($value ?? $this->value)->format(static::$apiFormats[$this->settings->type()->value] ?? "c");
     }

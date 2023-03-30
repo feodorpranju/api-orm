@@ -38,7 +38,7 @@ abstract class AbstractField implements FieldModel
      * Gets field value of provided mode
      *
      * @param FieldGetMode|null $mode
-     * @return mixed
+     * @return mixed|string|Collection
      */
     public function get(FieldGetMode $mode = null): mixed
     {
