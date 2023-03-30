@@ -20,14 +20,6 @@ if (! function_exists('config_path')) {
 }
 
 if (!function_exists("config")) {
-    $GLOBALS["feodorpranju__config_array"] = [];
-    foreach (scandir(config_path()) as $path) {
-        if (in_array($path, [".", ".."])) {
-            continue;
-        }
-        $GLOBALS["feodorpranju__config_array"][basename($path, ".php")] = include config_path().$path;
-    }
-    $GLOBALS["feodorpranju__config_repository"] = new Repository($GLOBALS["feodorpranju__config_array"]);
     /**
      * Get / set the specified configuration value.
      *
@@ -39,10 +31,24 @@ if (!function_exists("config")) {
      */
     function config(array|string|null $key = null, mixed $default = null): mixed
     {
+        if (!isset($GLOBALS["feodorpranju__config_repository"][config_path()])) {
+            $GLOBALS["feodorpranju__config_array"][config_path()] = [];
+            if (file_exists(config_path())) {
+                foreach (scandir(config_path()) as $path) {
+                    if (in_array($path, [".", ".."])) {
+                        continue;
+                    }
+                    $GLOBALS["feodorpranju__config_array"][config_path()][basename($path, ".php")]
+                        = include config_path().$path;
+                }
+            }
+            $GLOBALS["feodorpranju__config_repository"][config_path()]
+                = new Repository($GLOBALS["feodorpranju__config_array"]);
+        }
         /**
          * @var Repository $repository
          */
-        $repository =  $GLOBALS["feodorpranju__config_repository"];
+        $repository =  $GLOBALS["feodorpranju__config_repository"][config_path()];
 
         if ($key === null) {
             return $repository;
