@@ -43,7 +43,7 @@ if (!function_exists("config")) {
                 }
             }
             $GLOBALS["feodorpranju__config_repository"][config_path()]
-                = new Repository($GLOBALS["feodorpranju__config_array"]);
+                = new Repository($GLOBALS["feodorpranju__config_array"][config_path()]);
         }
         /**
          * @var Repository $repository
