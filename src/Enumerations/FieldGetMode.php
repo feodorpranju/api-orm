@@ -8,5 +8,5 @@ enum FieldGetMode
 {
     case String;
     case Usable;
-    case Crm;
+    case Api;
 }

@@ -4,6 +4,7 @@
 namespace Feodorpranju\ApiOrm\Contracts;
 
 use Feodorpranju\ApiOrm\Enumerations\FieldGetMode;
+use Illuminate\Support\Collection;
 
 
 interface FieldModel
@@ -13,10 +14,4 @@ interface FieldModel
     public function set(mixed $value): void;
 
     public function get(FieldGetMode $mode = null): mixed;
-
-    public function toString(): string;
-
-    public function toCrm(): mixed;
-
-    public function toUsable(): mixed;
 }

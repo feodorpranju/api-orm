@@ -7,6 +7,7 @@ use Feodorpranju\ApiOrm\Enumerations\fieldType;
 
 use Carbon\Carbon;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
+use Illuminate\Support\Collection;
 
 class DateTime extends AbstractField
 {
@@ -16,31 +17,46 @@ class DateTime extends AbstractField
         "time" => "H:i:s",
     ];
 
-    protected static array $crmFormats = [
+    protected static array $apiFormats = [
         "datetime" => "Y-m-d H:i:s",
         "date" => "Y-m-d",
         "time" => "H:i:s",
     ];
 
-    public function toUsable(): Carbon
+    /**
+     * @inheritdoc
+     */
+    protected function toUsable(mixed $value = null): Carbon|Collection
     {
-        return new Carbon($this->value);
+        return new Carbon($value ?? $this->value);
     }
 
-    public function toString(): string
+    /**
+     * @inheritdoc
+     */
+    protected function toString(mixed $value = null): string|Collection
     {
-        return $this->toUsable()->format(static::$stringFormats[$this->settings->type()->value] ?? "c");
+        return $this->toUsable($value ?? $this->value)->format(static::$stringFormats[$this->settings->type()->value] ?? "c");
     }
 
-    public function toCrm(): string
+    /**
+     * @inheritdoc
+     */
+    protected function toApi(mixed $value = null): string|Collection
     {
-        return $this->toUsable()->format(static::$crmFormats[$this->settings->type()->value] ?? "c");
+        return $this->toUsable($value ?? $this->value)->format(static::$apiFormats[$this->settings->type()->value] ?? "c");
     }
 
+    /**g
+     * @inheritdoc
+     */
     protected function validate(mixed $value = null): void
     {
+        $value ??= $this->value;
+        parent::validate();
         if (
-            !is_string($value)
+            !$this->settings->multiple()
+            && !is_string($value)
             && !is_a($value, Carbon::class, true)
             && !is_a($value, \DateTime::class, true)
         ) {
