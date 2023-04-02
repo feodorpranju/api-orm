@@ -9,6 +9,7 @@ use Feodorpranju\ApiOrm\Contracts\QueryBuilderInterface;
 use Feodorpranju\ApiOrm\Models\Fields\DefaultField;
 use Feodorpranju\ApiOrm\Models\Fields\Settings;
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
+use Feodorpranju\ApiOrm\Enumerations\FieldGetMode;
 use Illuminate\Support\Collection;
 
 abstract class AbstractModel implements ModelInterface
@@ -19,6 +20,7 @@ abstract class AbstractModel implements ModelInterface
 
     public function __construct(array|Collection $attributes = [])
     {
+        $this->_attributes = new Collection();
         $this->setFields(collect($attributes));
     }
 
@@ -50,6 +52,17 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getAs(string $name, FieldGetMode $mode = null): mixed
+    {
+        if ($this->_attributes->has($name)) {
+            return $this->_attributes->get($name)->get($mode);
+        }
+        return null;
+    }
+
+    /**
      * Gets field value. Null on undefined
      *
      * @param string $name
@@ -58,7 +71,7 @@ abstract class AbstractModel implements ModelInterface
     public function __get(string $name)
     {
         if ($this->_attributes->has($name)) {
-            return $this->_attributes->get($name);
+            return $this->_attributes->get($name)->get();
         }
         return null;
     }
