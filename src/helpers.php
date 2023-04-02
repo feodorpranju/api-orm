@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Config\Repository;
+use Illuminate\Support\Collection;
 
 if (! function_exists('config_path')) {
     $GLOBALS["feodorpranju__config_path"] = dirname(__DIR__)."/config/";
@@ -60,5 +61,16 @@ if (!function_exists("config")) {
         }
 
         return $repository->get($key, $default);
+    }
+}
+
+if (!function_exists("collect")) {
+    function collect(array|Collection $collection): Collection
+    {
+        if (is_a($collection, Collection::class, true)) {
+            return $collection;
+        }
+
+        return new Collection($collection);
     }
 }
