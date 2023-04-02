@@ -45,20 +45,18 @@ class Settings implements FieldSettings
      *
      * @param FieldType $type
      * @return string
-     * @throws UndefinedFieldTypeException
      */
     protected static function getFieldClass(FieldType $type): string
     {
         if ($class = config(static::$config.".".$type->value)) {
             return $class;
         } else {
-            throw new UndefinedFieldTypeException("Config for {$type->value} does not exist");
+            return DefaultField::class;
         }
     }
 
     /**
      * @inheritdoc
-     * @throws UndefinedFieldTypeException
      */
     public function field(mixed $value): FieldModel
     {
