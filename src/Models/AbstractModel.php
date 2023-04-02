@@ -62,6 +62,16 @@ abstract class AbstractModel implements ModelInterface
         return null;
     }
 
+    public function only(?array $names = null, ?FieldGetMode $mode = null): Collection
+    {
+        $names ??= $this->_attributes->keys();
+        $collection = new Collection();
+        foreach ($names as $name) {
+            $collection->put($name, $this->getAs($name, $mode));
+        }
+        return $collection;
+    }
+
     /**
      * Gets field value. Null on undefined
      *
