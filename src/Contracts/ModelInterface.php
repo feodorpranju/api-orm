@@ -46,4 +46,13 @@ interface ModelInterface
      * @return mixed
      */
     public function getAs(string $name, FieldGetMode $mode = null): mixed;
+
+    /**
+     * Gets collection of given fields. All if null;
+     *
+     * @param array $names
+     * @param FieldGetMode|null $mode
+     * @return Collection
+     */
+    public function only(?array $names = null, ?FieldGetMode $mode = null): Collection;
 }
