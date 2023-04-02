@@ -1,4 +1,13 @@
 config
 vendor
 .*
-test*
+!.env.example
+test.*
+composer.lock
+phpunit.xml.dist.bak
+symfony.lock
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

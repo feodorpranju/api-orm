@@ -14,7 +14,10 @@
         "phpunit/phpunit": "^10.0",
         "nesbot/carbon": "^2.66",
         "illuminate/config": "^10.4",
-        "illuminate/support": "^10.4"
+        "illuminate/support": "^10.4",
+        "symfony/flex": "^2.2",
+        "symfony/dotenv": "^6.2",
+        "symfony/console": "^6.2"
     },
     "autoload": {
         "psr-4": {
@@ -23,5 +26,26 @@
         "files": [
             "src/helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Feodorpranju\\ApiOrm\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "phpunit-run-unit-tests": [
+            "phpunit --testsuite unit_tests"
+        ],
+        "phpunit-run-integration-tests": [
+            "phpunit --testsuite integration_tests"
+        ],
+        "phpunit-migrate-configuration": [
+            "phpunit --migrate-configuration"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     }
 }

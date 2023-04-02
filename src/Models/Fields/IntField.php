@@ -35,19 +35,19 @@ class IntField extends AbstractField
         return $this->toUsable($value);
     }
 
-    /**g
+    /**
      * @inheritdoc
+     * @throws InvalidValueTypeException
      */
-    protected function validate(mixed $value = null): void
+    protected function validateOne(mixed $value = null, string $idx = null): void
     {
-        $value ??= $this->value;
-        parent::validate();
         if (
-            !$this->settings->multiple()
-            && !is_string($value)
+            !is_string($value)
             && !is_int($value)
         ) {
-            throw new InvalidValueTypeException("Wrong type for field ".$this->settings->id());
+            throw new InvalidValueTypeException("Wrong type for field "
+                .$this->settings->id()
+                .($idx !== null ? "at index $idx" : ""));
         }
     }
 }

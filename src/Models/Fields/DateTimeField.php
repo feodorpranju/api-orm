@@ -3,6 +3,7 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
+use DateTime;
 use Feodorpranju\ApiOrm\Enumerations\fieldType;
 
 use Carbon\Carbon;
@@ -47,20 +48,20 @@ class DateTimeField extends AbstractField
         return $this->toUsable($value ?? $this->value)->format(static::$apiFormats[$this->settings->type()->value] ?? "c");
     }
 
-    /**g
+    /**
      * @inheritdoc
+     * @throws InvalidValueTypeException
      */
-    protected function validate(mixed $value = null): void
+    protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
-        parent::validate();
         if (
-            !$this->settings->multiple()
-            && !is_string($value)
+            !is_string($value)
             && !is_a($value, Carbon::class, true)
-            && !is_a($value, \DateTime::class, true)
+            && !is_a($value, DateTime::class, true)
         ) {
-            throw new InvalidValueTypeException("Wrong type for field ".$this->settings->id());
+            throw new InvalidValueTypeException("Wrong type for field "
+                .$this->settings->id()
+                .($idx !== null ? "at index $idx" : ""));
         }
     }
 }

@@ -112,7 +112,7 @@ abstract class AbstractField implements FieldModel
     }
 
     /**
-     * Validates value
+     * Validates value checking settings.
      *
      * @param mixed|null $value
      * @throws InvalidValueTypeException
@@ -120,12 +120,30 @@ abstract class AbstractField implements FieldModel
     protected function validate(mixed $value = null): void
     {
         $value ??= $this->value;
-        if (
-            $this->settings->multiple()
-            && !is_array($value)
-            && !is_a($value, Collection::class, true)
-        ) {
-            throw new InvalidValueTypeException("Multiple field must be array");
+        if ($this->settings->multiple()) {
+            if (
+                !is_array($value)
+                && !is_a($value, Collection::class, true)
+            ) {
+                throw new InvalidValueTypeException("Multiple field must be array");
+            }
+            foreach ($value as $idx => $item) {
+                $this->validateOne($item, $idx);
+            }
+        } else {
+            $this->validateOne($value);
         }
+    }
+
+    /**
+     * Validates value.
+     * Does not check settings.
+     *
+     * @param mixed $value
+     * @param int|null $idx
+     */
+    protected function validateOne(mixed $value, string $idx = null): void
+    {
+
     }
 }
