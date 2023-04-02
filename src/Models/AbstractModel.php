@@ -13,13 +13,13 @@ use Illuminate\Support\Collection;
 
 abstract class AbstractModel implements ModelInterface
 {
-    private static string $_entity = "";
+    protected static string $_entity = "";
     protected Collection $_attributes;
     protected static Collection $_fields;
 
     public function __construct(array|Collection $attributes = [])
     {
-        $this->setFields($attributes);
+        $this->setFields(collect($attributes));
     }
 
     public static function get(int $id): ModelInterface
