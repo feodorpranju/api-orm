@@ -4,11 +4,15 @@
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
 
+use Feodorpranju\ApiOrm\Contracts\FieldModel;
 use Feodorpranju\ApiOrm\Contracts\FieldSettings;
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
+use Feodorpranju\ApiOrm\Exceptions\Fields\UndefinedFieldTypeException;
 
 class Settings implements FieldSettings
 {
+    static string $config = "api-orm.fields";
+
     public function __construct(
         protected string|int $id,
         protected FieldType $type,
@@ -34,5 +38,31 @@ class Settings implements FieldSettings
     public function id(): string|int
     {
         return $this->id;
+    }
+
+    /**
+     * Gets class for field type
+     *
+     * @param FieldType $type
+     * @return string
+     * @throws UndefinedFieldTypeException
+     */
+    protected static function getFieldClass(FieldType $type): string
+    {
+        if ($class = config(static::$config.".".$type->value)) {
+            return $class;
+        } else {
+            throw new UndefinedFieldTypeException("Config for {$type->value} does not exist");
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @throws UndefinedFieldTypeException
+     */
+    public function field(mixed $value): FieldModel
+    {
+        $class = static::getFieldClass($this->type());
+        return new $class($value, $this);
     }
 }
