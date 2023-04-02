@@ -50,9 +50,11 @@ class Settings implements FieldSettings
     {
         if ($class = config(static::$config.".".$type->value)) {
             return $class;
-        } else {
-            return DefaultField::class;
         }
+        if ($class = config(static::$config.".default")) {
+            return $class;
+        }
+        return DefaultField::class;
     }
 
     /**

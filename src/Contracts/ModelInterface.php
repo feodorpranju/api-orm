@@ -5,6 +5,7 @@ namespace Feodorpranju\ApiOrm\Contracts;
 
 
 use Illuminate\Support\Collection;
+use Feodorpranju\ApiOrm\Enumerations\FieldGetMode;
 
 interface ModelInterface
 {
@@ -38,4 +39,11 @@ interface ModelInterface
      * @return QueryBuilderInterface
      */
     public static function select(array $fields = null): QueryBuilderInterface;
+
+    /**
+     * @param string $name
+     * @param FieldGetMode|null $mode
+     * @return mixed
+     */
+    public function getAs(string $name, FieldGetMode $mode = null): mixed;
 }
