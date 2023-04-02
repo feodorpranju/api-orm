@@ -24,6 +24,14 @@ interface ModelInterface
     public static function entity(): string;
 
     /**
+     * Gets collection of field settings
+     *
+     * @return Collection
+     * @see FieldSettings
+     */
+    public static function fields(): Collection;
+
+    /**
      * Creates query builder object for current model
      *
      * @param array|null $fields
