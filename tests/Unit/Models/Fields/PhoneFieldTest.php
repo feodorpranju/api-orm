@@ -20,6 +20,7 @@ class PhoneFieldTest extends TestCase
      * @dataProvider valueDataProvider
      * @param mixed $value
      * @param bool $multiple
+     * @param int $format
      * @param mixed $string
      * @param mixed $api
      * @param mixed $usable
