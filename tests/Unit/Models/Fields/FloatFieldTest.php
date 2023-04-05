@@ -18,16 +18,16 @@ class FloatFieldTest extends TestCase
     /**
      * @dataProvider valueDataProvider
      * @param mixed $value
-     * @param FieldSettings $settings
+     * @param bool $multple
      * @param mixed $string
      * @param mixed $api
      * @param mixed $usable
      */
-    public function testGet(mixed $value, FieldSettings $settings, mixed $string, mixed $api, mixed $usable) {
-        $field = new FloatField($value, $settings);
-        $this->assertEquals($string, $field->get(FieldGetMode::String));
-        $this->assertEquals($api, $field->get(FieldGetMode::Api));
-        $this->assertEquals($usable, $field->get(FieldGetMode::Usable));
+    public function testGet(mixed $value, bool $multple, mixed $string, mixed $api, mixed $usable) {
+        $field = (new Settings("float", FieldType::Float, $multple))->field($value);
+        $this->assertEquals($string, $field->get(FieldGetMode::String), "String");
+        $this->assertEquals($api, $field->get(FieldGetMode::Api), "Api");
+        $this->assertEquals($usable, $field->get(FieldGetMode::Usable), "Usable");
     }
 
     public static function valueDataProvider(): Generator
@@ -36,7 +36,7 @@ class FloatFieldTest extends TestCase
         //from string
         yield "valid_single_float_from_str" => [
             "1.1",
-            self::getSettings(false),
+            false,
             "1.1",
             1.1,
             1.1
@@ -45,7 +45,7 @@ class FloatFieldTest extends TestCase
         //from int
         yield "valid_single_float_from_int" => [
             1,
-            self::getSettings(false),
+            false,
             "1",
             1.0,
             1.0
@@ -54,7 +54,7 @@ class FloatFieldTest extends TestCase
         //from float
         yield "valid_single_float_from_float" => [
             1.1,
-            self::getSettings(false),
+            false,
             "1.1",
             1.1,
             1.1
@@ -64,7 +64,7 @@ class FloatFieldTest extends TestCase
         //from string
         yield "valid_multiple_float_from_str" => [
             ["1.2", "2.3", "7.6"],
-            self::getSettings(true),
+            true,
             collect(["1.2", "2.3", "7.6"]),
             collect([1.2, 2.3, 7.6]),
             collect([1.2, 2.3, 7.6]),
@@ -73,7 +73,7 @@ class FloatFieldTest extends TestCase
         //from int
         yield "valid_multiple_int_from_int" => [
             [1, 2, 7],
-            self::getSettings(true),
+            true,
             collect(["1", "2", "7"]),
             collect([1, 2, 7]),
             collect([1, 2, 7]),
@@ -82,15 +82,10 @@ class FloatFieldTest extends TestCase
         //from float
         yield "valid_multiple_int_from_float" => [
             [1.2, 2.3, 7.6],
-            self::getSettings(true),
+            true,
             collect(["1.2", "2.3", "7.6"]),
             collect([1.2, 2.3, 7.6]),
             collect([1.2, 2.3, 7.6]),
         ];
-    }
-
-    public static function getSettings(bool $multiple): FieldSettings
-    {
-        return new Settings("int", FieldType::Float, $multiple);
     }
 }

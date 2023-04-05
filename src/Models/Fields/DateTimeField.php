@@ -4,11 +4,8 @@
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
 use DateTime;
-use Feodorpranju\ApiOrm\Enumerations\fieldType;
-
 use Carbon\Carbon;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
-use Illuminate\Support\Collection;
 
 class DateTimeField extends AbstractField
 {
