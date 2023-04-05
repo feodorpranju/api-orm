@@ -3,20 +3,41 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
-use Feodorpranju\ApiOrm\Enumerations\fieldType;
+use Brick\PhoneNumber\PhoneNumber;
+use Brick\PhoneNumber\PhoneNumberFormat;
 
-use Carbon\Carbon;
+use Brick\PhoneNumber\PhoneNumberParseException;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
-use Illuminate\Support\Collection;
 
-class IntField extends AbstractField
+class PhoneField extends AbstractField
 {
+    protected static int $phoneNumberFormat = PhoneNumberFormat::INTERNATIONAL;
+    protected static bool $usableAsObject = false;
+
     /**
      * @inheritdoc
+     * @param bool|null $asObjectForce force as object value.
+     * If not null ignores $usableAsObject
+     * @throws PhoneNumberParseException
+     * @see PhoneField::$usableAsObject
      */
-    protected function toUsable(mixed $value = null): int
+    protected function toUsable(mixed $value = null, ?bool $asObjectForce = null): string|PhoneNumber
     {
-        return (int)($value ?? $this->value);
+        $value ??= $this->value;
+        $phone = is_a($value, PhoneNumber::class, true)
+            ? $value : PhoneNumber::parse($this->prepare($value));
+
+        return (
+            (
+                $asObjectForce === null
+                && static::$usableAsObject
+            ) || (
+                $asObjectForce !== null
+                && $asObjectForce
+            )
+        )
+            ? $phone
+            : $phone->format(static::$phoneNumberFormat);
     }
 
     /**
@@ -24,15 +45,15 @@ class IntField extends AbstractField
      */
     protected function toString(mixed $value = null): string
     {
-        return (string)($value ?? $this->value);
+        return $this->toUsable($value, false);
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): int
+    protected function toApi(mixed $value = null): mixed
     {
-        return $this->toUsable($value);
+        return $this->toString($value);
     }
 
     /**
@@ -49,5 +70,35 @@ class IntField extends AbstractField
                 .$this->settings->id()
                 .($idx !== null ? "at index $idx" : ""));
         }
+    }
+
+    /**
+     * Sets format of phone returning as string
+     *
+     * @param int $format
+     * @see PhoneNumberFormat
+     */
+    public static function setFormat(int $format) {
+        static::$phoneNumberFormat = $format;
+    }
+
+    /**
+     * Sets default mode for usable value
+     *
+     * @param bool $usableAsObject
+     */
+    public static function setUsableAsObject(bool $usableAsObject) {
+        static::$usableAsObject = $usableAsObject;
+    }
+
+    /**
+     * Prepares value before providing it into parser
+     *
+     * @param string|int $value
+     * @return string
+     */
+    protected function prepare(string|int $value): string
+    {
+        return "+".preg_replace('/[^0-9.]+/', '', (string)$value);
     }
 }
