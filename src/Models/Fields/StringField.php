@@ -41,6 +41,7 @@ class StringField extends AbstractField
      */
     protected function validateOne(mixed $value = null, string $idx = null): void
     {
+        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_float($value)

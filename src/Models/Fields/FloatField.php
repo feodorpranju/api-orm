@@ -39,6 +39,7 @@ class FloatField extends AbstractField
      */
     protected function validateOne(mixed $value, string $idx = null): void
     {
+        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)
