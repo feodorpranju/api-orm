@@ -3,11 +3,7 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
-use Feodorpranju\ApiOrm\Enumerations\fieldType;
-
-use Carbon\Carbon;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
-use Illuminate\Support\Collection;
 
 class IntField extends AbstractField
 {
@@ -41,6 +37,7 @@ class IntField extends AbstractField
      */
     protected function validateOne(mixed $value = null, string $idx = null): void
     {
+        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)
