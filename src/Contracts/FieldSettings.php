@@ -5,15 +5,31 @@ namespace Feodorpranju\ApiOrm\Contracts;
 
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
 use Feodorpranju\ApiOrm\Models\Fields\AbstractField;
+use Illuminate\Support\Collection;
 
 interface FieldSettings
 {
     public function __construct(
-        string|int $id,
-        FieldType $type,
+        mixed $id,
+        ?FieldType $type = null,
         bool $multiple = false,
         bool $readonly = false
     );
+
+    /**
+     * Sets enumeration items
+     *
+     * @param array|Collection $items
+     * @return FieldSettings
+     */
+    public function setItems(array|Collection $items): static;
+
+    /**
+     * Gets enumeration items
+     *
+     * @return Collection
+     */
+    public function items(): Collection;
 
     /**
      * Gets field's multiple flag
