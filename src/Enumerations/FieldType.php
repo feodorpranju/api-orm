@@ -8,6 +8,7 @@ enum FieldType: string
 {
     case String = "string";
     case Int = "integer";
+    case Bool = "boolean";
     case Float = "float";
     case Enum = "enumeration";
     case File = "file";

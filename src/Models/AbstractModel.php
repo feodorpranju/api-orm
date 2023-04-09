@@ -20,7 +20,6 @@ abstract class AbstractModel implements ModelInterface
 
     public function __construct(array|Collection $attributes = [])
     {
-        $this->_attributes = new Collection();
         $this->setFields(collect($attributes));
     }
 
@@ -46,6 +45,9 @@ abstract class AbstractModel implements ModelInterface
 
     protected function setFields(Collection $values)
     {
+        if (!isset($this->_attributes)) {
+            $this->_attributes = collect([]);
+        }
         foreach ($values as $name => $value) {
             $this->{$name} = $value;
         }
@@ -84,6 +86,11 @@ abstract class AbstractModel implements ModelInterface
             return $this->_attributes->get($name)->get();
         }
         return null;
+    }
+
+    public function __isset(string $name): bool
+    {
+        return $this->_attributes->has($name);
     }
 
     /**
