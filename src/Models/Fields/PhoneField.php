@@ -11,8 +11,8 @@ use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
 
 class PhoneField extends AbstractField
 {
-    protected static int $phoneNumberFormat = PhoneNumberFormat::INTERNATIONAL;
-    protected static bool $usableAsObject = false;
+    public static int $phoneNumberFormat = PhoneNumberFormat::INTERNATIONAL;
+    public static bool $usableAsObject = false;
 
     /**
      * @inheritdoc
@@ -45,7 +45,7 @@ class PhoneField extends AbstractField
      */
     protected function toString(mixed $value = null): string
     {
-        return $this->toUsable($value, false);
+        return strval($this->toUsable($value, false));
     }
 
     /**
@@ -71,25 +71,6 @@ class PhoneField extends AbstractField
                 .$this->settings->id()
                 .($idx !== null ? "at index $idx" : ""));
         }
-    }
-
-    /**
-     * Sets format of phone returning as string
-     *
-     * @param int $format
-     * @see PhoneNumberFormat
-     */
-    public static function setFormat(int $format) {
-        static::$phoneNumberFormat = $format;
-    }
-
-    /**
-     * Sets default mode for usable value
-     *
-     * @param bool $usableAsObject
-     */
-    public static function setUsableAsObject(bool $usableAsObject) {
-        static::$usableAsObject = $usableAsObject;
     }
 
     /**

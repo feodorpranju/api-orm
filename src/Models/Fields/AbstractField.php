@@ -135,6 +135,11 @@ abstract class AbstractField implements FieldModel
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
+
     /**
      * Validates value.
      * Does not check settings.
