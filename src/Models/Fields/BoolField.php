@@ -3,18 +3,21 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
-use Feodorpranju\ApiOrm\Enumerations\fieldType;
-
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
+use Illuminate\Support\Str;
 
-class FloatField extends AbstractField
+class BoolField extends AbstractField
 {
+    protected static array $trueCases = ["1", "ok", "true", "yes", "y", "valid", "success"];
+
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): float
+    protected function toUsable(mixed $value = null): bool
     {
-        return (float)($value ?? $this->value);
+        $value ??= $this->value;
+        return (is_bool($value) && $value)
+            || in_array(Str::lower((string)$value), static::$trueCases);
     }
 
     /**
@@ -22,13 +25,13 @@ class FloatField extends AbstractField
      */
     protected function toString(mixed $value = null): string
     {
-        return (string)($value ?? $this->value);
+        return $this->toUsable($value) ? "1" : "0";
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): float
+    protected function toApi(mixed $value = null): int|bool|string
     {
         return $this->toUsable($value);
     }
@@ -43,7 +46,7 @@ class FloatField extends AbstractField
         if (
             !is_string($value)
             && !is_int($value)
-            && !is_float($value)
+            && !is_bool($value)
         ) {
             throw new InvalidValueTypeException("Wrong type for field "
                 .$this->settings->id()
