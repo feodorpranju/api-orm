@@ -26,7 +26,7 @@ class PhoneFieldTest extends TestCase
      * @param mixed $usable
      */
     public function testGet(mixed $value, bool $multiple, int $format, mixed $string, mixed $api, mixed $usable) {
-        PhoneField::setFormat($format);
+        PhoneField::$phoneNumberFormat = $format;
         $field = (new Settings("phone", FieldType::Phone, $multiple))->field($value);
         $this->assertEquals($string, $field->get(FieldGetMode::String));
         $this->assertEquals($api, $field->get(FieldGetMode::Api));
