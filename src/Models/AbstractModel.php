@@ -18,26 +18,41 @@ abstract class AbstractModel implements ModelInterface
     protected Collection $_attributes;
     protected static Collection $_fields;
 
+    /**
+     * @inheritdoc
+     */
     public function __construct(array|Collection $attributes = [])
     {
         $this->setFields(collect($attributes));
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function get(int $id): ModelInterface
     {
         // TODO: Implement get() method.
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function entity(): string
     {
         return static::$_entity;
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function select(array $fields = null): QueryBuilderInterface
     {
         // TODO: Implement select() method.
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function fields(): Collection
     {
         return static::$_fields ??= collect([]);
@@ -64,6 +79,9 @@ abstract class AbstractModel implements ModelInterface
         return null;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function only(?array $names = null, ?FieldGetMode $mode = null): Collection
     {
         $names ??= $this->_attributes->keys();
@@ -75,12 +93,34 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public static function find(
+        array|Collection $conditions = [],
+        string $orderBy = null,
+        string $orderDirection = null,
+        int $offset = 0,
+        int $limit = 50
+    ): Collection
+    {
+        return collect([]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function count(array|Collection $conditions): int
+    {
+        return 0;
+    }
+
+    /**
      * Gets field value. Null on undefined
      *
      * @param string $name
      * @return mixed|null
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         if ($this->_attributes->has($name)) {
             return $this->_attributes->get($name)->get();
