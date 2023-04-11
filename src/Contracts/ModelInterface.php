@@ -10,6 +10,13 @@ use Feodorpranju\ApiOrm\Enumerations\FieldGetMode;
 interface ModelInterface
 {
     /**
+     * Creates Model and sets it's fields
+     *
+     * @param array|Collection $attributes
+     */
+    public function __construct(array|Collection $attributes = []);
+
+    /**
      * Gets record from bitrix24 as model
      *
      * @param int $id Entity id
@@ -50,9 +57,35 @@ interface ModelInterface
     /**
      * Gets collection of given fields. All if null;
      *
-     * @param array $names
+     * @param array|null $names
      * @param FieldGetMode|null $mode
      * @return Collection
      */
     public function only(?array $names = null, ?FieldGetMode $mode = null): Collection;
+
+    /**
+     * Finds items by filter
+     *
+     * @param array|Collection $conditions
+     * @param string|null $orderBy
+     * @param string|null $orderDirection
+     * @param int $offset
+     * @param int $limit
+     * @return Collection|false
+     */
+    public static function find(
+        array|Collection $conditions = [],
+        string $orderBy = null,
+        string $orderDirection = null,
+        int $offset = 0,
+        int $limit = 50
+    ): Collection|false;
+
+    /**
+     * Gets record count by filter
+     *
+     * @param array|Collection $conditions
+     * @return int
+     */
+    public static function count(array|Collection $conditions): int;
 }

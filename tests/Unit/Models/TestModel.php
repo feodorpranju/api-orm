@@ -43,4 +43,19 @@ class TestModel extends AbstractModel
             3 => 143
         ];
     }
+
+    public static function find(array|Collection $conditions = [], string $orderBy = null, string $orderDirection = null, int $offset = 0, int $limit = 50): Collection
+    {
+        $models = collect([]);
+        $i = 0;
+        while ($offset + $i < self::count($conditions) && $i++ < $limit) {
+            $models->push(new self);
+        }
+        return $models;
+    }
+
+    public static function count(array|Collection $conditions): int
+    {
+        return (int)$conditions[0][2] ?? 0;
+    }
 }
