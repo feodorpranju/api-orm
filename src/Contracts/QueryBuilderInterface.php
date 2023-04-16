@@ -12,6 +12,14 @@ use Illuminate\Support\LazyCollection;
 interface QueryBuilderInterface
 {
     /**
+     * Sets fields to be selected
+     *
+     * @param array $fields
+     * @return $this
+     */
+    public function select(array $fields = []): static;
+
+    /**
      * Sets condition. Uses AND logic.
      *
      * @param string $field

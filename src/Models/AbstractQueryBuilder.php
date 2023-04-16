@@ -51,6 +51,13 @@ class AbstractQueryBuilder implements QueryBuilderInterface
      */
     protected int $current = 1;
 
+    /**
+     * List of fields to be selected
+     *
+     * @var array
+     */
+    protected array $select = [];
+
     public function __construct(protected string $model)
     {
         if (!is_a($model, ModelInterface::class, true)) {
@@ -59,6 +66,17 @@ class AbstractQueryBuilder implements QueryBuilderInterface
         $this->conditions = collect([]);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function select(array $fields = []): static {
+        $this->select = $fields;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function where(string $field, mixed $operand = null, mixed $value = null): static
     {
         $tValue = $value ?? $operand ?? true;
@@ -72,21 +90,33 @@ class AbstractQueryBuilder implements QueryBuilderInterface
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function whereFirst(string $field, mixed $operand = null, mixed $value = null): ?ModelInterface
     {
         return $this->where($field, $operand, $value)->first();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function first(): ?ModelInterface
     {
         return $this->lazy()->first();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function firstOrFail(): ModelInterface
     {
         return $this->lazy()->firstOrFail();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function all(): Collection
     {
         return $this->lazy()->collect();
@@ -119,7 +149,6 @@ class AbstractQueryBuilder implements QueryBuilderInterface
                 }
                 yield $model;
             }
-
         } while (
             $models->count() !== 0
             && ($page-1)*$this->chunkSize+$models->count() !== $this->count()
@@ -210,6 +239,7 @@ class AbstractQueryBuilder implements QueryBuilderInterface
             $this->conditions,
             $this->orderField ?? null,
             $this->orderDirection ?? null,
+            $this->select,
             $this->offset,
             $this->chunkSize
         );
