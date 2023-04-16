@@ -9,7 +9,7 @@ interface ModelDeletableInterface
     /**
      * Deletes record
      *
-     * @return ModelInterface
+     * @return void
      */
-    public static function delete(): ModelInterface;
+    public static function delete(): void;
 }

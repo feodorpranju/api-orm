@@ -9,7 +9,7 @@ interface ModelEditableInterface
     /**
      * Saves model changes or creates new record if not exist
      *
-     * @return ModelInterface
+     * @return ModelEditableInterface
      */
-    public static function save(): ModelInterface;
+    public function save(): static;
 }
