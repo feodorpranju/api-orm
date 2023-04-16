@@ -31,7 +31,7 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @inheritdoc
      */
-    public static function get(int $id): ModelInterface
+    public static function get(int|string $id): ModelInterface
     {
         // TODO: Implement get() method.
     }
@@ -60,7 +60,7 @@ abstract class AbstractModel implements ModelInterface
         return static::$_fields ??= collect([]);
     }
 
-    protected function setFields(Collection $values)
+    protected function setFields(array|Collection $values)
     {
         if (!isset($this->_attributes)) {
             $this->_attributes = collect([]);

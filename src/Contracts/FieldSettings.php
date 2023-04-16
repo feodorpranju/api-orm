@@ -67,4 +67,11 @@ interface FieldSettings
      * @see FieldSettings::type()
      */
     public function field(mixed $value): FieldModel;
+
+    /**
+     * Gets class of linked model
+     *
+     * @return string|null
+     */
+    public function model(): ?string;
 }

@@ -19,10 +19,10 @@ interface ModelInterface
     /**
      * Gets record from bitrix24 as model
      *
-     * @param int $id Entity id
+     * @param int|string $id Entity id
      * @return ModelInterface
      */
-    public static function get(int $id): ModelInterface;
+    public static function get(int|string $id): ModelInterface;
 
     /**
      * Returns entity name

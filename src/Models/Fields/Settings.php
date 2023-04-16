@@ -28,7 +28,8 @@ class Settings implements FieldSettings
         protected mixed $id,
         protected ?FieldType $type = null,
         protected bool $multiple = false,
-        protected bool $readonly = false
+        protected bool $readonly = false,
+        protected ?string $model = null
     ){}
 
     /**
@@ -117,5 +118,10 @@ class Settings implements FieldSettings
     {
         $class = static::getFieldClass($this->type());
         return new $class($value, $this);
+    }
+
+    public function model(): ?string
+    {
+        return $this->model;
     }
 }
