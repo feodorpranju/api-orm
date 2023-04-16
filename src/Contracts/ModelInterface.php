@@ -66,9 +66,10 @@ interface ModelInterface
     /**
      * Finds items by filter
      *
-     * @param array|Collection $conditions
-     * @param string|null $orderBy
-     * @param string|null $orderDirection
+     * @param array|Collection $conditions List of conditions [[field, operator, value]...]
+     * @param string|null $orderBy Field name
+     * @param string|null $orderDirection ASC|DESC
+     * @param array $select
      * @param int $offset
      * @param int $limit
      * @return Collection|false
@@ -77,6 +78,7 @@ interface ModelInterface
         array|Collection $conditions = [],
         string $orderBy = null,
         string $orderDirection = null,
+        array $select = [],
         int $offset = 0,
         int $limit = 50
     ): Collection|false;

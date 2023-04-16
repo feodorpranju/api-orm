@@ -44,7 +44,14 @@ class TestModel extends AbstractModel
         ];
     }
 
-    public static function find(array|Collection $conditions = [], string $orderBy = null, string $orderDirection = null, int $offset = 0, int $limit = 50): Collection
+    public static function find(
+        array|Collection $conditions = [],
+        string $orderBy = null,
+        string $orderDirection = null,
+        array $select = [],
+        int $offset = 0,
+        int $limit = 50
+    ): Collection
     {
         $models = collect([]);
         $i = 0;
