@@ -17,6 +17,7 @@ abstract class AbstractModel implements ModelInterface
     protected static string $_entity = "";
     protected Collection $_attributes;
     protected static Collection $_fields;
+    protected array $updatedFields = [];
 
     /**
      * @inheritdoc
@@ -24,6 +25,7 @@ abstract class AbstractModel implements ModelInterface
     public function __construct(array|Collection $attributes = [])
     {
         $this->setFields(collect($attributes));
+        $this->updatedFields = [];
     }
 
     /**
@@ -119,7 +121,7 @@ abstract class AbstractModel implements ModelInterface
      * Gets field value. Null on undefined
      *
      * @param string $name
-     * @return mixed|null
+     * @return mixed
      */
     public function __get(string $name): mixed
     {
@@ -154,6 +156,9 @@ abstract class AbstractModel implements ModelInterface
                     || is_a($value, Collection::class, true)
                 )))
             );
+        }
+        if (!in_array($name, $this->updatedFields)) {
+            $this->updatedFields[] = $name;
         }
     }
 }

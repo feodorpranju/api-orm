@@ -13,7 +13,7 @@ use Generator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
 
-class AbstractQueryBuilder implements QueryBuilderInterface
+abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
     protected Collection $conditions;
     protected const availableOperands = ["=", ">", "<", ">=", "<=", "!", "<>"];
@@ -151,7 +151,7 @@ class AbstractQueryBuilder implements QueryBuilderInterface
             }
         } while (
             $models->count() !== 0
-            && ($page-1)*$this->chunkSize+$models->count() !== $this->count()
+            && ($page-1)*$this->chunkSize+$models->count() < $this->count()
         );
     }
 
