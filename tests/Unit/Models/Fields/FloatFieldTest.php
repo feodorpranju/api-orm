@@ -32,60 +32,29 @@ class FloatFieldTest extends TestCase
 
     public static function valueDataProvider(): Generator
     {
-        //single
-        //from string
-        yield "valid_single_float_from_str" => [
-            "1.1",
-            false,
-            "1.1",
-            1.1,
-            1.1
+        $values = [
+            "valid_single_float_from_str" => ["1.1", "1.1", 1.1, 1.1],
+            "valid_single_float_from_float" => [1.1, "1.1", 1.1, 1.1],
+            "valid_single_float_from_int" => [1, "1", 1, 1],
+            "valid_single_float_from_null" => [null, "", null, 0],
         ];
 
-        //from int
-        yield "valid_single_float_from_int" => [
-            1,
-            false,
-            "1",
-            1.0,
-            1.0
-        ];
+        foreach ($values as $name => $value) {
+            yield $name => [
+                $value[0],
+                false,
+                $value[1],
+                $value[2],
+                $value[3]
+            ];
+        }
 
-        //from float
-        yield "valid_single_float_from_float" => [
-            1.1,
-            false,
-            "1.1",
-            1.1,
-            1.1
-        ];
-
-        //multiple
-        //from string
-        yield "valid_multiple_float_from_str" => [
-            ["1.2", "2.3", "7.6"],
+        yield "valid_multiple_float" => [
+            array_map(function ($case) {return $case[0];}, array_values($values)),
             true,
-            collect(["1.2", "2.3", "7.6"]),
-            collect([1.2, 2.3, 7.6]),
-            collect([1.2, 2.3, 7.6]),
-        ];
-
-        //from int
-        yield "valid_multiple_int_from_int" => [
-            [1, 2, 7],
-            true,
-            collect(["1", "2", "7"]),
-            collect([1, 2, 7]),
-            collect([1, 2, 7]),
-        ];
-
-        //from float
-        yield "valid_multiple_int_from_float" => [
-            [1.2, 2.3, 7.6],
-            true,
-            collect(["1.2", "2.3", "7.6"]),
-            collect([1.2, 2.3, 7.6]),
-            collect([1.2, 2.3, 7.6]),
+            collect(array_map(function ($case) {return $case[1];}, array_values($values))),
+            collect(array_map(function ($case) {return $case[2];}, array_values($values))),
+            collect(array_map(function ($case) {return $case[3];}, array_values($values))),
         ];
     }
 }

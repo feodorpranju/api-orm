@@ -24,25 +24,31 @@ class DateTimeField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): Carbon
+    protected function toUsable(mixed $value): ?Carbon
     {
-        return new Carbon($value ?? $this->value);
+        return empty($value)
+            ? null
+            : new Carbon($value);
     }
 
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
-        return $this->toUsable($value ?? $this->value)->format(static::$stringFormats[$this->settings->type()->value] ?? "c");
+        return empty($value)
+            ? ""
+            : $this->toUsable($value)->format(static::$stringFormats[$this->settings->type()->value] ?? "c");
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): string
+    protected function toApi(mixed $value): ?string
     {
-        return $this->toUsable($value ?? $this->value)->format(static::$apiFormats[$this->settings->type()->value] ?? "c");
+        return empty($value)
+            ? null
+            : $this->toUsable($value)->format(static::$apiFormats[$this->settings->type()->value] ?? "c");
     }
 
     /**
@@ -51,11 +57,11 @@ class DateTimeField extends AbstractField
      */
     protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_a($value, Carbon::class, true)
             && !is_a($value, DateTime::class, true)
+            && !is_null($value)
         ) {
             throw new InvalidValueTypeException("Wrong type for field "
                 .$this->settings->id()

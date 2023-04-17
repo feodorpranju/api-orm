@@ -11,6 +11,11 @@ use Illuminate\Support\Collection;
 
 class TestModel extends AbstractModel
 {
+    public static function get(int|string $id): static
+    {
+        return new static();
+    }
+
     public static function fields(): Collection
     {
         return collect([

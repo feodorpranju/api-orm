@@ -4,12 +4,12 @@
 namespace Feodorpranju\ApiOrm\Contracts;
 
 
-interface ModelDeletableInterface
+interface ModelDeletableInterface extends ModelInterface
 {
     /**
      * Deletes record
      *
      * @return void
      */
-    public static function delete(): void;
+    public function delete(): void;
 }

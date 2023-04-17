@@ -3,8 +3,6 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
-use Feodorpranju\ApiOrm\Enumerations\fieldType;
-
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
 
 class FloatField extends AbstractField
@@ -12,25 +10,29 @@ class FloatField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): float
+    protected function toUsable(mixed $value): float
     {
-        return (float)($value ?? $this->value);
+        return (float)$value;
     }
 
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
-        return (string)($value ?? $this->value);
+        return  is_null($value)
+            ? ""
+            : (string)$this->toUsable($value);
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): float
+    protected function toApi(mixed $value): ?float
     {
-        return $this->toUsable($value);
+        return is_null($value)
+        ? null
+        : $this->toUsable($value);
     }
 
     /**
@@ -39,15 +41,15 @@ class FloatField extends AbstractField
      */
     protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)
             && !is_float($value)
+            && !is_null($value)
         ) {
             throw new InvalidValueTypeException("Wrong type for field "
                 .$this->settings->id()
-                .($idx !== null ? "at index $idx" : ""));
+                .($idx !== null ? " at index $idx" : ""));
         }
     }
 }

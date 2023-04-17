@@ -22,8 +22,8 @@ class StringFieldTest extends TestCase
      * @param mixed $api
      * @param mixed $usable
      */
-    public function testGet(mixed $value, FieldSettings $settings, mixed $string, mixed $api, mixed $usable) {
-        $field = $settings->field($value);
+    public function testGet(mixed $value, bool $multiple, mixed $string, mixed $api, mixed $usable) {
+        $field = (new Settings("string", FieldType::String, $multiple))->field($value);
         $this->assertEquals($string, $field->get(FieldGetMode::String));
         $this->assertEquals($api, $field->get(FieldGetMode::Api));
         $this->assertEquals($usable, $field->get(FieldGetMode::Usable));
@@ -31,65 +31,31 @@ class StringFieldTest extends TestCase
 
     public static function valueDataProvider(): Generator
     {
-        //single
-        //from string
-        yield "valid_single_str_from_str" => [
-            "Lorem ipsum",
-            self::getSettings(false),
-            "Lorem ipsum",
-            "Lorem ipsum",
-            "Lorem ipsum"
+        $values = [
+            "valid_single_str_from_str" => ["Lorem ipsum", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum"],
+            "valid_single_str_from_float_int" => [1.0, "1", "1", "1"],
+            "valid_single_str_from_float" => [1.7, "1.7", "1.7", "1.7"],
+            "valid_single_str_from_int" => [1, "1", 1, 1],
+            "valid_single_str_from_empty_str" => ["", "", "", ""],
+            "valid_single_str_from_null" => [null, "", null, null],
         ];
 
-        //from int
-        yield "valid_single_str_from_int" => [
-            111,
-            self::getSettings(false),
-            "111",
-            "111",
-            "111"
-        ];
+        foreach ($values as $name => $value) {
+            yield $name => [
+                $value[0],
+                false,
+                $value[1],
+                $value[2],
+                $value[3]
+            ];
+        }
 
-        //from float
-        yield "valid_single_str_from_float" => [
-            111.1,
-            self::getSettings(false),
-            "111.1",
-            "111.1",
-            "111.1"
+        yield "valid_multiple_str" => [
+            array_map(function ($case) {return $case[0];}, array_values($values)),
+            true,
+            collect(array_map(function ($case) {return $case[1];}, array_values($values))),
+            collect(array_map(function ($case) {return $case[2];}, array_values($values))),
+            collect(array_map(function ($case) {return $case[3];}, array_values($values))),
         ];
-
-        //multiple
-        //from string
-        yield "valid_multiple_str_from_str" => [
-            ["Lorem", "ipsum"],
-            self::getSettings(true),
-            collect(["Lorem", "ipsum"]),
-            collect(["Lorem", "ipsum"]),
-            collect(["Lorem", "ipsum"]),
-        ];
-
-        //from int
-        yield "valid_multiple_str_from_int" => [
-            [1, 2, 7],
-            self::getSettings(true),
-            collect(["1", "2", "7"]),
-            collect(["1", "2", "7"]),
-            collect(["1", "2", "7"]),
-        ];
-
-        //from float
-        yield "valid_multiple_str_from_float" => [
-            [1.3, 2.5, 7.8],
-            self::getSettings(true),
-            collect(["1.3", "2.5", "7.8"]),
-            collect(["1.3", "2.5", "7.8"]),
-            collect(["1.3", "2.5", "7.8"]),
-        ];
-    }
-
-    public static function getSettings(bool $multiple): FieldSettings
-    {
-        return new Settings("string", FieldType::String, $multiple);
     }
 }

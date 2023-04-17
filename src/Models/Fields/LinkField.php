@@ -3,35 +3,21 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
+use Feodorpranju\ApiOrm\Contracts\ModelInterface;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
-use Feodorpranju\ApiOrm\Models\Fields\Enumerations\Item;
+use Feodorpranju\ApiOrm\Exceptions\Fields\ModelDoesNotExistException;
 
-class EnumField extends AbstractField
+class LinkField extends AbstractField
 {
-    public static bool $usableAsItem = false;
-
     /**
      * @inheritdoc
-     * @see Item
      */
-    protected function toUsable(mixed $value = null, ?bool $asItemForce = null): int|string|Item
+    protected function toUsable(mixed $value): ModelInterface
     {
-        $item = $this->settings->items()->firstWhere("id", $value);
-        if (!$item) {
-            $item = $this->settings->items()->firstOrFail("value", $value);
+        if (!class_exists($this->settings->model())) {
+            throw new ModelDoesNotExistException("Class {$this->settings->model()} does not exist");
         }
-
-        return (
-            (
-                $asItemForce === null
-                && static::$usableAsItem
-            ) || (
-                $asItemForce !== null
-                && $asItemForce
-            )
-        )
-            ? $item
-            : $item->value;
+        return $this->settings->model()::get($this->toString($value));
     }
 
     /**
@@ -39,7 +25,7 @@ class EnumField extends AbstractField
      */
     protected function toString(mixed $value): string
     {
-        return (string)($this->toUsable($value, true)->value);
+        return (int)$value;
     }
 
     /**
@@ -47,7 +33,7 @@ class EnumField extends AbstractField
      */
     protected function toApi(mixed $value): int|string
     {
-        return $this->toUsable($value, true)->id;
+        return (int)$this->toString($value);
     }
 
     /**

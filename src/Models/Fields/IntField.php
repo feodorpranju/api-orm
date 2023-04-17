@@ -10,37 +10,42 @@ class IntField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): int
+    protected function toUsable(mixed $value): int
     {
-        return (int)($value ?? $this->value);
+        return (int)$value;
     }
 
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
-        return (string)($value ?? $this->value);
+        return is_null($value)
+            ? ""
+            : (string)$this->toUsable($value);
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): int
+    protected function toApi(mixed $value): ?int
     {
-        return $this->toUsable($value);
+        return is_null($value)
+            ? null
+            : $this->toUsable($value);
     }
 
     /**
      * @inheritdoc
      * @throws InvalidValueTypeException
      */
-    protected function validateOne(mixed $value = null, string $idx = null): void
+    protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
+            && !is_float($value)
             && !is_int($value)
+            && !is_null($value)
         ) {
             throw new InvalidValueTypeException("Wrong type for field "
                 .$this->settings->id()

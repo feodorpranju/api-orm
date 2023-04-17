@@ -31,7 +31,7 @@ class EmailField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): string
+    protected function toUsable(mixed $value): string
     {
         return $this->toString($value);
     }
@@ -39,15 +39,15 @@ class EmailField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
-        return trim($value ?? $this->value);
+        return trim($value);
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): mixed
+    protected function toApi(mixed $value): mixed
     {
         return $this->toString($value);
     }
@@ -56,9 +56,9 @@ class EmailField extends AbstractField
      * @inheritdoc
      * @throws InvalidValueTypeException
      */
-    protected function validateOne(mixed $value = null, string $idx = null): void
+    protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value = trim($value ??= $this->value);
+        $value = trim($value);
         if (
             !is_string($value)
         ) {
