@@ -31,7 +31,7 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @inheritdoc
      */
-    public static function get(int|string $id): ModelInterface
+    public static function get(int|string $id): static
     {
         // TODO: Implement get() method.
     }

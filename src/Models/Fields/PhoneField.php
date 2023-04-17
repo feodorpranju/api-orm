@@ -5,7 +5,6 @@ namespace Feodorpranju\ApiOrm\Models\Fields;
 
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberFormat;
-
 use Brick\PhoneNumber\PhoneNumberParseException;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
 
@@ -23,7 +22,6 @@ class PhoneField extends AbstractField
      */
     protected function toUsable(mixed $value = null, ?bool $asObjectForce = null): string|PhoneNumber
     {
-        $value ??= $this->value;
         $phone = is_a($value, PhoneNumber::class, true)
             ? $value : PhoneNumber::parse($this->prepare($value));
 
@@ -43,7 +41,7 @@ class PhoneField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
         return strval($this->toUsable($value, false));
     }
@@ -51,7 +49,7 @@ class PhoneField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): mixed
+    protected function toApi(mixed $value): mixed
     {
         return $this->toString($value);
     }
@@ -60,9 +58,8 @@ class PhoneField extends AbstractField
      * @inheritdoc
      * @throws InvalidValueTypeException
      */
-    protected function validateOne(mixed $value = null, string $idx = null): void
+    protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)

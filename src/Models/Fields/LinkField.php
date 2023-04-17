@@ -12,7 +12,7 @@ class LinkField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): ModelInterface
+    protected function toUsable(mixed $value): ModelInterface
     {
         if (!class_exists($this->settings->model())) {
             throw new ModelDoesNotExistException("Class {$this->settings->model()} does not exist");
@@ -23,15 +23,15 @@ class LinkField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
-        return (int)($value ?? $this->value);
+        return (int)$value;
     }
 
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): int|string
+    protected function toApi(mixed $value): int|string
     {
         return (int)$this->toString($value);
     }
@@ -40,9 +40,8 @@ class LinkField extends AbstractField
      * @inheritdoc
      * @throws InvalidValueTypeException
      */
-    protected function validateOne(mixed $value = null, string $idx = null): void
+    protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)

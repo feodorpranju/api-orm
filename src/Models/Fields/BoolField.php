@@ -13,9 +13,8 @@ class BoolField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toUsable(mixed $value = null): bool
+    protected function toUsable(mixed $value): bool
     {
-        $value ??= $this->value;
         return (is_bool($value) && $value)
             || in_array(Str::lower((string)$value), static::$trueCases);
     }
@@ -23,7 +22,7 @@ class BoolField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
         return $this->toUsable($value) ? "1" : "0";
     }
@@ -31,7 +30,7 @@ class BoolField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): int|bool|string
+    protected function toApi(mixed $value): int|bool|string
     {
         return $this->toUsable($value);
     }
@@ -42,11 +41,11 @@ class BoolField extends AbstractField
      */
     protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)
             && !is_bool($value)
+            && !is_null($value)
         ) {
             throw new InvalidValueTypeException("Wrong type for field "
                 .$this->settings->id()

@@ -89,28 +89,41 @@ class DateTimeFieldTest extends TestCase
                 $datetime->format(self::$apiFormats[$type->value]),
                 $datetime
             ];
+
+            yield "valid_single_{$type->value}_from_null" => [
+                null,
+                $type,
+                false,
+                "",
+                null,
+                null
+            ];
         }
 
         $valueCallback = fn($format): string => $datetime->format($format);
         $values = array_map($valueCallback, array_keys($formats));
         $values[] = $datetime->toDateTime();
         $values[] = $datetime->toDateTime();
+        $values[] = null;
         foreach ($types as $type) {
             $strCallback = fn($value): string => $value->format(self::$stringFormats[$type->value]);
             $stringResults = array_map($strCallback, array_values($formats));
             $stringResults[] = $datetime->format(self::$stringFormats[$type->value]);
             $stringResults[] = $datetime->format(self::$stringFormats[$type->value]);
+            $stringResults[] = "";
 
             $apiCallback = fn($value): string => $value->format(self::$apiFormats[$type->value]);
             $apiResults = array_map($apiCallback, array_values($formats));
             $apiResults[] = $datetime->format(self::$apiFormats[$type->value]);
             $apiResults[] = $datetime->format(self::$apiFormats[$type->value]);
+            $apiResults[] = null;
 
             $usableResults = array_map(function ($value) {
                 return $value;
             }, array_values($formats));
             $usableResults[] = $datetime;
             $usableResults[] = $datetime;
+            $usableResults[] = null;
 
             foreach ($formats as $format => $carbon) {
                 yield "valid_multiple_{$type->value}_from_$format" => [

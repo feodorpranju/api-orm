@@ -44,7 +44,7 @@ abstract class AbstractField implements FieldModel
     {
         return $this->settings->multiple()
             ? $this->multiple($mode)
-            : $this->toMode($mode);
+            : $this->toMode($mode, $this->value);
     }
 
     /**
@@ -54,7 +54,7 @@ abstract class AbstractField implements FieldModel
      * @param mixed|null $value
      * @return mixed
      */
-    protected function toMode(FieldGetMode $mode = null, mixed $value = null): mixed
+    protected function toMode(FieldGetMode $mode = null, mixed $value): mixed
     {
         return match ($mode) {
             FieldGetMode::Api => $this->toApi($value),
@@ -69,9 +69,9 @@ abstract class AbstractField implements FieldModel
      * @param mixed|null $value
      * @return string|Collection
      */
-    protected function toString(mixed $value = null): string|Collection
+    protected function toString(mixed $value): string
     {
-        return $value ?? $this->value;
+        return $value;
     }
 
     /**
@@ -80,9 +80,9 @@ abstract class AbstractField implements FieldModel
      * @param mixed|null $value
      * @return mixed
      */
-    protected function toApi(mixed $value = null): mixed
+    protected function toApi(mixed $value): mixed
     {
-        return $value ?? $this->value;
+        return $value;
     }
 
     /**
@@ -91,9 +91,9 @@ abstract class AbstractField implements FieldModel
      * @param mixed|null $value
      * @return mixed
      */
-    protected function toUsable(mixed $value = null): mixed
+    protected function toUsable(mixed $value): mixed
     {
-        return $value ?? $this->value;
+        return $value;
     }
 
     /**
@@ -117,9 +117,8 @@ abstract class AbstractField implements FieldModel
      * @param mixed|null $value
      * @throws InvalidValueTypeException
      */
-    protected function validate(mixed $value = null): void
+    protected function validate(mixed $value): void
     {
-        $value ??= $this->value;
         if ($this->settings->multiple()) {
             if (
                 !is_array($value)

@@ -16,7 +16,6 @@ class EnumField extends AbstractField
      */
     protected function toUsable(mixed $value = null, ?bool $asItemForce = null): int|string|Item
     {
-        $value ??= $this->value;
         $item = $this->settings->items()->firstWhere("id", $value);
         if (!$item) {
             $item = $this->settings->items()->firstOrFail("value", $value);
@@ -38,7 +37,7 @@ class EnumField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toString(mixed $value = null): string
+    protected function toString(mixed $value): string
     {
         return (string)($this->toUsable($value, true)->value);
     }
@@ -46,7 +45,7 @@ class EnumField extends AbstractField
     /**
      * @inheritdoc
      */
-    protected function toApi(mixed $value = null): int|string
+    protected function toApi(mixed $value): int|string
     {
         return $this->toUsable($value, true)->id;
     }
@@ -55,9 +54,8 @@ class EnumField extends AbstractField
      * @inheritdoc
      * @throws InvalidValueTypeException
      */
-    protected function validateOne(mixed $value = null, string $idx = null): void
+    protected function validateOne(mixed $value, string $idx = null): void
     {
-        $value ??= $this->value;
         if (
             !is_string($value)
             && !is_int($value)
