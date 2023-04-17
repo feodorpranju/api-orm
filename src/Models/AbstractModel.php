@@ -16,16 +16,21 @@ abstract class AbstractModel implements ModelInterface
 {
     protected static string $_entity = "";
     protected Collection $_attributes;
+    protected Collection $_rawAttributes;
     protected static Collection $_fields;
     protected array $updatedFields = [];
+    protected const setFieldsOnConstruct = false;
 
     /**
      * @inheritdoc
      */
     public function __construct(array|Collection $attributes = [])
     {
-        $this->setFields(collect($attributes));
-        $this->updatedFields = [];
+        $this->_attributes = collect([]);
+        if (static::setFieldsOnConstruct) {
+            $this->setFields($attributes);
+        }
+        $this->_rawAttributes = collect($attributes);
     }
 
     /**
@@ -127,13 +132,17 @@ abstract class AbstractModel implements ModelInterface
     {
         if ($this->_attributes->has($name)) {
             return $this->_attributes->get($name)->get();
+        } elseif ($this->_rawAttributes->has($name)) {
+            $this->{$name} = $this->_rawAttributes->get($name);
+            return $this->_attributes->get($name)->get();
         }
         return null;
     }
 
     public function __isset(string $name): bool
     {
-        return $this->_attributes->has($name);
+        return $this->_rawAttributes->has($name)
+            || $this->_attributes->has($name);
     }
 
     /**
@@ -146,6 +155,9 @@ abstract class AbstractModel implements ModelInterface
     {
         if ($this->_attributes->has($name)) {
             $this->_attributes->get($name)->set($value);
+            if (!in_array($name, $this->updatedFields)) {
+                $this->updatedFields[] = $name;
+            }
         } elseif (static::fields()->has($name)) {
             $this->_attributes->put($name, static::fields()->get($name)->field($value));
         } else {
@@ -156,9 +168,6 @@ abstract class AbstractModel implements ModelInterface
                     || is_a($value, Collection::class, true)
                 )))
             );
-        }
-        if (!in_array($name, $this->updatedFields)) {
-            $this->updatedFields[] = $name;
         }
     }
 }
