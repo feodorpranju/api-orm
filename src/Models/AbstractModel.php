@@ -20,6 +20,7 @@ abstract class AbstractModel implements ModelInterface
     protected static Collection $_fields;
     protected array $updatedFields = [];
     protected const setFieldsOnConstruct = false;
+    protected const defaultGetMode = FieldGetMode::Usable;
 
     /**
      * @inheritdoc
@@ -81,7 +82,10 @@ abstract class AbstractModel implements ModelInterface
     public function getAs(string $name, FieldGetMode $mode = null): mixed
     {
         if ($this->_attributes->has($name)) {
-            return $this->_attributes->get($name)->get($mode);
+            return $this->_attributes->get($name)->get($mode ?? static::defaultGetMode);
+        } elseif ($this->_rawAttributes->has($name)) {
+            $this->{$name} = $this->_rawAttributes->get($name);
+            return $this->_attributes->get($name)->get($mode ?? static::defaultGetMode);
         }
         return null;
     }
@@ -91,7 +95,7 @@ abstract class AbstractModel implements ModelInterface
      */
     public function only(?array $names = null, ?FieldGetMode $mode = null): Collection
     {
-        $names ??= $this->_attributes->keys();
+        $names ??= $this->_rawAttributes->keys();
         $collection = new Collection();
         foreach ($names as $name) {
             $collection->put($name, $this->getAs($name, $mode));
@@ -130,13 +134,7 @@ abstract class AbstractModel implements ModelInterface
      */
     public function __get(string $name): mixed
     {
-        if ($this->_attributes->has($name)) {
-            return $this->_attributes->get($name)->get();
-        } elseif ($this->_rawAttributes->has($name)) {
-            $this->{$name} = $this->_rawAttributes->get($name);
-            return $this->_attributes->get($name)->get();
-        }
-        return null;
+        return $this->getAs($name);
     }
 
     public function __isset(string $name): bool
