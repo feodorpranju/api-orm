@@ -14,15 +14,12 @@
         "nesbot/carbon": "^2.66",
         "illuminate/config": "^10.4",
         "illuminate/support": "^10.4",
-        "symfony/flex": "^2.2",
-        "symfony/dotenv": "^6.2",
-        "symfony/console": "^6.2",
         "brick/phonenumber": "^0.5.0",
         "egulias/email-validator": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",
-        "larapack/dd": "^1.1"
+        "symfony/var-dumper": "^6.2"
     },
     "autoload": {
         "psr-4": {
@@ -47,10 +44,5 @@
         "phpunit-migrate-configuration": [
             "phpunit --migrate-configuration"
         ]
-    },
-    "config": {
-        "allow-plugins": {
-            "symfony/flex": true
-        }
     }
 }
