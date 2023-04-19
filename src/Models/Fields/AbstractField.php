@@ -15,7 +15,10 @@ abstract class AbstractField implements FieldModel
 {
     public function __construct(protected mixed $value, protected FieldSettings $settings)
     {
-        $this->validate($value);
+        if ($this->settings->multiple() && empty($this->value)) {
+            $this->value = [];
+        }
+        $this->validate($this->value);
     }
 
     /**

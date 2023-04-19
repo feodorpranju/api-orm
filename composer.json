@@ -12,7 +12,6 @@
         "illuminate/collections": "^10.4",
         "illuminate/contracts": "^10.4",
         "nesbot/carbon": "^2.66",
-        "illuminate/config": "^10.4",
         "illuminate/support": "^10.4",
         "brick/phonenumber": "^0.5.0",
         "egulias/email-validator": "^4.0"
