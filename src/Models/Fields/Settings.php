@@ -8,13 +8,25 @@ use Feodorpranju\ApiOrm\Contracts\FieldModel;
 use Feodorpranju\ApiOrm\Contracts\FieldSettings;
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
 use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
-use Feodorpranju\ApiOrm\Exceptions\Fields\UndefinedFieldTypeException;
 use Feodorpranju\ApiOrm\Models\Fields\Enumerations\Item;
 use Illuminate\Support\Collection;
 
 class Settings implements FieldSettings
 {
-    static string $config = "api-orm.fields";
+    protected const FIELD_TYPES = [
+        "datetime" => \Feodorpranju\ApiOrm\Models\Fields\DateTimeField::class,
+        "date" => \Feodorpranju\ApiOrm\Models\Fields\DateTimeField::class,
+        "time" => \Feodorpranju\ApiOrm\Models\Fields\DateTimeField::class,
+        "string" => \Feodorpranju\ApiOrm\Models\Fields\StringField::class,
+        "integer" => \Feodorpranju\ApiOrm\Models\Fields\IntField::class,
+        "float" => \Feodorpranju\ApiOrm\Models\Fields\FloatField::class,
+        "phone" => \Feodorpranju\ApiOrm\Models\Fields\PhoneField::class,
+        "email" => \Feodorpranju\ApiOrm\Models\Fields\EmailField::class,
+        "enumeration" => \Feodorpranju\ApiOrm\Models\Fields\EnumField::class,
+        "boolean" => \Feodorpranju\ApiOrm\Models\Fields\BoolField::class,
+        "link" => \Feodorpranju\ApiOrm\Models\Fields\LinkField::class,
+        "default" => \Feodorpranju\ApiOrm\Models\Fields\DefaultField::class,
+    ];
 
     /**
      * Items for enumeration
@@ -102,13 +114,9 @@ class Settings implements FieldSettings
      */
     protected static function getFieldClass(FieldType $type): string
     {
-        if ($class = config(static::$config.".".$type->value)) {
-            return $class;
-        }
-        if ($class = config(static::$config.".default")) {
-            return $class;
-        }
-        return DefaultField::class;
+        return static::FIELD_TYPES[$type->value]
+            ?? self::FIELD_TYPES[$type->value]
+            ?? DefaultField::class;
     }
 
     /**
