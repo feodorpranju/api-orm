@@ -90,4 +90,12 @@ interface ModelInterface
      * @return int
      */
     public static function count(array|Collection $conditions): int;
+
+    /**
+     * Преобразует данные полей в массив
+     *
+     * @param FieldGetMode|null $mode
+     * @return array
+     */
+    public function toArray(?FieldGetMode $mode = null): array;
 }
