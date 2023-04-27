@@ -168,4 +168,12 @@ abstract class AbstractModel implements ModelInterface
             );
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function toArray(?FieldGetMode $mode = null): array
+    {
+        return $this->only(null, $mode)->toArray();
+    }
 }
