@@ -8,9 +8,11 @@ use Feodorpranju\ApiOrm\Models\AbstractModel;
 use Feodorpranju\ApiOrm\Models\Fields\Settings;
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Pure;
 
 class TestModel extends AbstractModel
 {
+    #[Pure]
     public static function get(int|string $id): static
     {
         return new static();
@@ -19,6 +21,7 @@ class TestModel extends AbstractModel
     public static function fields(): Collection
     {
         return collect([
+            "single_readonly" => new Settings("single_readonly", FieldType::String, false, true),
             "single_string" => new Settings("single_string", FieldType::String),
             "single_int" => new Settings("single_int", FieldType::Int),
             "single_float" => new Settings("single_float", FieldType::Float),
@@ -69,5 +72,13 @@ class TestModel extends AbstractModel
     public static function count(array|Collection $conditions): int
     {
         return (int)$conditions[0][2] ?? 0;
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        if (method_exists($this, $name)) {
+            return call_user_func_array([$this, $name], $arguments);
+        }
+        return null;
     }
 }

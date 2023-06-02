@@ -4,6 +4,8 @@
 namespace Feodorpranju\ApiOrm\Models\Fields\Enumerations;
 
 
+use Feodorpranju\ApiOrm\Contracts\ModelInterface;
+use Feodorpranju\ApiOrm\Contracts\QueryBuilderInterface;
 use Feodorpranju\ApiOrm\Models\AbstractModel;
 use Illuminate\Support\Collection;
 

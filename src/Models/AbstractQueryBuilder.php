@@ -16,9 +16,9 @@ use Illuminate\Support\LazyCollection;
 abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
     protected Collection $conditions;
-    protected const availableOperands = ["=", ">", "<", ">=", "<=", "!", "<>"];
-    protected const availableDirections = ["ASC", "DESC"];
-    protected const generatorLoopLimit = 1000000;
+    protected const AVAILABLE_OPERANDS = ["=", ">", "<", ">=", "<=", "!", "<>"];
+    protected const AVAILABLE_DIRECTIONS = ["ASC", "DESC"];
+    protected const GENERATOR_LOOP_LIMIT = 1000000;
 
     protected string $orderField;
     protected string $orderDirection;
@@ -82,7 +82,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
         $tValue = $value ?? $operand ?? true;
         $tOperand = $value === null ? "=" : ($operand ?? "=");
 
-        if (!in_array($tOperand, static::availableOperands)) {
+        if (!in_array($tOperand, static::AVAILABLE_OPERANDS)) {
             throw new InvalidOperandException("Invalid operand '$tOperand' in ".static::class);
         }
 
@@ -144,7 +144,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
             $models = $this->forPage($page, $this->chunkSize)->get();
 
             foreach ($models as $model) {
-                if ($i++ > static::generatorLoopLimit) {
+                if ($i++ > static::GENERATOR_LOOP_LIMIT) {
                     break;
                 }
                 yield $model;
@@ -194,7 +194,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     {
         $this->orderField = $field;
 
-        if (!in_array($direction, static::availableDirections)) {
+        if (!in_array($direction, static::AVAILABLE_DIRECTIONS)) {
             throw new InvalidOrderDirectionException("Invalid order direction '$direction' in ".static::class);
         }
 
