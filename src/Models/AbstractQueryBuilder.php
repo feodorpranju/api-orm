@@ -103,7 +103,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
      */
     public function first(): ?ModelInterface
     {
-        return $this->lazy()->first();
+        return $this->forPage(1, 1)->get()->first();
     }
 
     /**
@@ -111,7 +111,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
      */
     public function firstOrFail(): ModelInterface
     {
-        return $this->lazy()->firstOrFail();
+        return $this->forPage(1, 1)->get()->firstOrFail();
     }
 
     /**
