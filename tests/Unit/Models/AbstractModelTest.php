@@ -12,6 +12,7 @@ use Feodorpranju\ApiOrm\Models\Fields\IntField;
 use Feodorpranju\ApiOrm\Models\Fields\PhoneField;
 use Feodorpranju\ApiOrm\Models\Fields\StringField;
 use Generator;
+use Illuminate\Support\Arr;
 use PHPUnit\Framework\TestCase;
 
 class AbstractModelTest extends TestCase
@@ -27,6 +28,65 @@ class AbstractModelTest extends TestCase
         $model = new TestModel([$id => $value]);
         $this->assertTrue(isset($model->{$id}), "Field '$id' isset");
         $this->assertInstanceOf($fieldClass, $model->fields()->get($id)->field($value), "Field '$id' class '$fieldClass'");
+    }
+
+    public function testOnly(): void
+    {
+        $values = [
+            'single_readonly' => 'Lorem',
+            'single_string' => 'ipsum'
+        ];
+        $model = new TestModel($values);
+        $this->assertEquals($values, $model->only()->toArray(), 'get all');
+        $this->assertEquals(
+            Arr::only($values, ['single_readonly']),
+            $model->only(['single_readonly'])->toArray(),
+            'get single_readonly'
+        );
+    }
+
+    public function testExcept(): void
+    {
+        $values = [
+            'single_readonly' => 'Lorem',
+            'single_string' => 'ipsum'
+        ];
+        $model = new TestModel($values);
+        $this->assertEquals($values, $model->except()->toArray(), 'get all');
+        $this->assertEquals(
+            Arr::except($values, ['single_readonly']),
+            $model->except(['single_readonly'])->toArray(),
+            'get except single_readonly'
+        );
+    }
+
+    public function testGetReadonlyFields(): void
+    {
+        $model = new TestModel();
+        $this->assertEquals(['single_readonly'], $model->getReadonlyFields());
+    }
+
+    public function testGetFieldUpdates(): void
+    {
+        $values = [
+            'single_readonly' => 'Lorem',
+            'single_string' => 'ipsum'
+        ];
+        $model = new TestModel($values);
+
+        $this->assertEquals([], $model->getFieldUpdates()->toArray(), 'test without update');
+        $model->single_string = 'ispum2';
+        $this->assertEquals(
+            ['single_string' => 'ispum2'],
+            $model->getFieldUpdates()->toArray(),
+            'test with normal update'
+        );
+        $model->single_readonly = 'Lorem 2';
+        $this->assertEquals(
+            ['single_string' => 'ispum2'],
+            $model->getFieldUpdates()->toArray(),
+            'test with readonly update'
+        );
     }
 
     public static function valueDataProvider(): Generator

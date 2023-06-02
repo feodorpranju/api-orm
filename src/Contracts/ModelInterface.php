@@ -40,6 +40,14 @@ interface ModelInterface
     public static function fields(): Collection;
 
     /**
+     * Sets values by keys as field names
+     *
+     * @param array|Collection $values
+     * @return $this
+     */
+    public function put(array|Collection $values): static;
+
+    /**
      * Creates query builder object for current model
      *
      * @param array|null $fields
@@ -62,6 +70,15 @@ interface ModelInterface
      * @return Collection
      */
     public function only(?array $names = null, ?FieldGetMode $mode = null): Collection;
+
+    /**
+     * Gets collection of fields except given ones. All if empty;
+     *
+     * @param array $names
+     * @param FieldGetMode|null $mode
+     * @return Collection
+     */
+    public function except(array $names = [], ?FieldGetMode $mode = null): Collection;
 
     /**
      * Finds items by filter
