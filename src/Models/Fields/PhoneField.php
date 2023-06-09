@@ -78,6 +78,12 @@ class PhoneField extends AbstractField
      */
     protected function prepare(string|int $value): string
     {
-        return "+".preg_replace('/[^0-9.]+/', '', (string)$value);
+        $raw = preg_replace('/[^0-9.]+/', '', (string)$value);
+        if (strlen($raw) === 10) {
+            $raw = '7'.$raw;
+        } elseif (strlen($raw) > 10 && $raw[0] === '8') {
+            $raw[0] = '7';
+        }
+        return "+".$raw;
     }
 }

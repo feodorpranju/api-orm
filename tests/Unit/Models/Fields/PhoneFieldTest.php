@@ -44,7 +44,21 @@ class PhoneFieldTest extends TestCase
             "valid_single_phone_from_str_dashed_plus" => "+7 999 999-99-99",
             "valid_single_phone_from_str_brackets_plus" => "+7 (999) 999 99 99",
             "valid_single_phone_from_str_brackets_dashed" => "7 (999) 999-99-99",
-            "valid_single_phone_from_str_brackets_dashed_plus" => "+7 (999) 999-99-99"
+            "valid_single_phone_from_str_brackets_dashed_plus" => "+7 (999) 999-99-99",
+            "valid_single_phone_from_int_w8" => 89999999999,
+            "valid_single_phone_from_str_w8" => "89999999999",
+            "valid_single_phone_from_str_plus_w8" => "+89999999999",
+            "valid_single_phone_from_str_dashed_w8" => "8 999 999-99-99",
+            "valid_single_phone_from_str_brackets_w8" => "8 (999) 999 99 99",
+            "valid_single_phone_from_str_dashed_plus_w8" => "+8 999 999-99-99",
+            "valid_single_phone_from_str_brackets_plus_w8" => "+8 (999) 999 99 99",
+            "valid_single_phone_from_str_brackets_dashed_w8" => "8 (999) 999-99-99",
+            "valid_single_phone_from_str_brackets_dashed_plus_w8" => "+8 (999) 999-99-99",
+            "valid_single_phone_from_int_woc" => 9999999999,
+            "valid_single_phone_from_str_woc" => "9999999999",
+            "valid_single_phone_from_str_dashed_woc" => "999 999-99-99",
+            "valid_single_phone_from_str_brackets_woc" => "(999) 999 99 99",
+            "valid_single_phone_from_str_brackets_dashed_woc" => "7 (999) 999-99-99",
         ];
 
         $results = [
