@@ -16,8 +16,10 @@ use Illuminate\Support\LazyCollection;
 abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
     protected Collection $conditions;
-    protected const AVAILABLE_OPERANDS = ["=", ">", "<", ">=", "<=", "!", "<>"];
-    protected const AVAILABLE_DIRECTIONS = ["ASC", "DESC"];
+    public const AVAILABLE_OPERANDS = ['', '=', '>', '<', '>=', '<=', '!', '!=', '<>'];
+    public const ON_UNDEFINED_OPERAND = '';
+    public const DEFAULT_OPERAND = '=';
+    public const AVAILABLE_DIRECTIONS = ['ASC', 'DESC'];
     protected const GENERATOR_LOOP_LIMIT = 1000000;
 
     protected string $orderField;
@@ -77,13 +79,26 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * @inheritdoc
      */
-    public function where(string $field, mixed $operand = null, mixed $value = null): static
+    public function where(string|array $field, mixed $operand = null, mixed $value = null): static
     {
+        if (is_array($field)) {
+            foreach ($field as $key => $condition) {
+                if (is_int($key)) {
+                    $this->where(...$condition);
+                } elseif (is_array($condition)) {
+                    $this->where($key, ...$condition);
+                } else {
+                    $this->where($key, $condition);
+                }
+            }
+            return $this;
+        }
+
         $tValue = $value ?? $operand ?? true;
-        $tOperand = $value === null ? "=" : ($operand ?? "=");
+        $tOperand = $value === null ? static::DEFAULT_OPERAND : ($operand ?? static::DEFAULT_OPERAND);
 
         if (!in_array($tOperand, static::AVAILABLE_OPERANDS)) {
-            throw new InvalidOperandException("Invalid operand '$tOperand' in ".static::class);
+            $tOperand = static::ON_UNDEFINED_OPERAND;
         }
 
         $this->conditions->push([$field, $tOperand, $tValue]);

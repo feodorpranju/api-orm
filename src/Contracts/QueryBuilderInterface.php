@@ -22,12 +22,12 @@ interface QueryBuilderInterface
     /**
      * Sets condition. Uses AND logic.
      *
-     * @param string $field
+     * @param string|array $field
      * @param mixed|null $operand
      * @param mixed|null $value
      * @return $this
      */
-    public function where(string $field, mixed $operand = null, mixed $value = null): static;
+    public function where(string|array $field, mixed $operand = null, mixed $value = null): static;
 
     /**
      * Sets where condition and gets first.

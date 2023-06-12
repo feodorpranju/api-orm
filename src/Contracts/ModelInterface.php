@@ -56,6 +56,18 @@ interface ModelInterface
     public static function select(array $fields = null): QueryBuilderInterface;
 
     /**
+     * Creates query builder object for current model with condition
+     *
+     * @param string|array $field
+     * @param mixed|null $operand
+     * @param mixed|null $value
+     * @return QueryBuilderInterface
+     *
+     * @see QueryBuilderInterface::where()
+     */
+    public static function where(string|array $field, mixed $operand = null, mixed $value = null): QueryBuilderInterface;
+
+    /**
      * @param string $name
      * @param FieldGetMode|null $mode
      * @return mixed
@@ -115,4 +127,13 @@ interface ModelInterface
      * @return array
      */
     public function toArray(?FieldGetMode $mode = null): array;
+
+    /**
+     * Creates object of model with given data.<br/>
+     * Equals to <b>new static($attributes)</b>;
+     *
+     * @param array|Collection $attributes Field data
+     * @return static
+     */
+    public static function make(array|Collection $attributes = []): static;
 }
