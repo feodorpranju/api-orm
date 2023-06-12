@@ -4,6 +4,7 @@
 namespace Feodorpranju\ApiOrm\Tests\Unit\Models;
 
 
+use Feodorpranju\ApiOrm\Contracts\QueryBuilderInterface;
 use Feodorpranju\ApiOrm\Models\AbstractModel;
 use Feodorpranju\ApiOrm\Models\Fields\Settings;
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
@@ -67,6 +68,14 @@ class TestModel extends AbstractModel
             $models->push(new self);
         }
         return $models;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function select(array $fields = null): QueryBuilderInterface
+    {
+        return (new TestQueryBuilder(static::class))->select($fields ?? []);
     }
 
     public static function count(array|Collection $conditions): int

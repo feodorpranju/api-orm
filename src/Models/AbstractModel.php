@@ -41,6 +41,14 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     /**
      * @inheritdoc
      */
+    public static function make(array|Collection $attributes = []): static
+    {
+        return new static($attributes);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function entity(): string
     {
         return static::$_entity;
@@ -278,6 +286,14 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
      */
     public static function select(array $fields = null): QueryBuilderInterface
     {
-        // TODO: Implement select() method.
+        return (new DefaultQueryBuilder(static::class))->select($fields ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function where(array|string $field, mixed $operand = null, mixed $value = null): QueryBuilderInterface
+    {
+        return static::select()->where($field, $operand, $value);
     }
 }

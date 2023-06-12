@@ -15,8 +15,30 @@ use Generator;
 use Illuminate\Support\Arr;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class AbstractModelTest
+ * @package Feodorpranju\ApiOrm\Tests\Unit\Models
+ *
+ * @author feodorpranju
+ * @tag model
+ */
 class AbstractModelTest extends TestCase
 {
+    public function testMake(): void
+    {
+        $this->assertEquals(
+            new TestModel(),
+            TestModel::make(),
+            'without fields'
+        );
+
+        $this->assertEquals(
+            new TestModel(['id' => 'test']),
+            TestModel::make(['id' => 'test']),
+            'without fields'
+        );
+    }
+
     /**
      * @param string $id
      * @param mixed $value
