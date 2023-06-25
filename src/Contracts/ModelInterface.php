@@ -144,5 +144,5 @@ interface ModelInterface
      * @return Collection
      * @see Make
      */
-    public function collect(array|Collection $collection): Collection;
+    public static function collect(array|Collection $collection): Collection;
 }
