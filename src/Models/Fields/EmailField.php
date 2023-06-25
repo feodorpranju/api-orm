@@ -3,10 +3,6 @@
 
 namespace Feodorpranju\ApiOrm\Models\Fields;
 
-use Brick\PhoneNumber\PhoneNumber;
-use Brick\PhoneNumber\PhoneNumberFormat;
-
-use Brick\PhoneNumber\PhoneNumberParseException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\EmailValidation;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
@@ -18,6 +14,11 @@ use Feodorpranju\ApiOrm\Exceptions\Fields\ValidationException;
 
 class EmailField extends AbstractField
 {
+    /**
+     * @inheritdoc
+     */
+    public const IS_EMPTY_STRING_UNDEFINED = true;
+
     protected static MultipleValidationWithAnd $validations;
 
     public function __construct(protected mixed $value, protected FieldSettings $settings)
@@ -54,7 +55,7 @@ class EmailField extends AbstractField
 
     /**
      * @inheritdoc
-     * @throws InvalidValueTypeException
+     * @throws InvalidValueTypeException|ValidationException
      */
     protected function validateOne(mixed $value, string $idx = null): void
     {
@@ -100,6 +101,4 @@ class EmailField extends AbstractField
         }
         static::$validations = new MultipleValidationWithAnd($validations);
     }
-
-
 }

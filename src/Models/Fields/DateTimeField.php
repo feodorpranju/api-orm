@@ -9,6 +9,11 @@ use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
 
 class DateTimeField extends AbstractField
 {
+    /**
+     * @inheritdoc
+     */
+    public const IS_EMPTY_STRING_UNDEFINED = true;
+
     protected static array $stringFormats = [
         "datetime" => "d.m.Y H:i:s",
         "date" => "d.m.Y",

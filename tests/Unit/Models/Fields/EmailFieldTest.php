@@ -27,30 +27,32 @@ class EmailFieldTest extends TestCase
 
     public static function valueDataProvider(): Generator
     {
-        $values = [
-            "valid_single_email" => 'test@test.test',
-            "valid_single_email_with_spaces" => " test@test.test ",
-        ];
-
         $result = "test@test.test";
 
-        foreach ($values as $name => $value) {
+        $values = [
+            "valid_single_email" => ['test@test.test', $result, $result, $result],
+            "valid_single_email_with_spaces" => [" test@test.test ", $result, $result, $result],
+            "valid_single_email_null" => [null, '', null, null],
+            "valid_single_email_empty" => ['', '', null, null],
+            "valid_single_email_empty_with_space" => [' ', '', null, null],
+        ];
+
+        foreach ($values as $name => $v) {
             yield $name => [
-                $value,
+                $v[0],
                 false,
-                $result,
-                $result,
-                $result
+                $v[1],
+                $v[2],
+                $v[3],
             ];
         }
 
-        $resultCollection = collect(array_fill(0, count($values), $result));
         yield "valid_multiple_email" => [
-            array_values($values),
+            collect($values)->map(fn($v) => $v[0])->values(),
             true,
-            $resultCollection,
-            $resultCollection,
-            $resultCollection
+            collect($values)->map(fn($v) => $v[1])->values(),
+            collect($values)->map(fn($v) => $v[2])->values(),
+            collect($values)->map(fn($v) => $v[3])->values(),
         ];
     }
 }

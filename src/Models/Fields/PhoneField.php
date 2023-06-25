@@ -10,6 +10,11 @@ use Feodorpranju\ApiOrm\Exceptions\Fields\InvalidValueTypeException;
 
 class PhoneField extends AbstractField
 {
+    /**
+     * @inheritdoc
+     */
+    public const IS_EMPTY_STRING_UNDEFINED = true;
+
     public static int $phoneNumberFormat = PhoneNumberFormat::INTERNATIONAL;
     public static bool $usableAsObject = false;
 
