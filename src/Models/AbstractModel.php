@@ -243,7 +243,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     /**
      * @inheritdoc
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->{$offset});
     }
@@ -251,7 +251,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     /**
      * @inheritdoc
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->{$offset};
     }
@@ -259,7 +259,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     /**
      * @inheritdoc
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->__set($offset, $value);
     }
@@ -267,7 +267,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     /**
      * @inheritdoc
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->_attributes->offsetUnset($offset);
         $this->_rawAttributes->offsetUnset($offset);

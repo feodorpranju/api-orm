@@ -18,6 +18,7 @@ class PhoneFieldTest extends TestCase
 {
     /**
      * @dataProvider valueDataProvider
+     * @dataProvider nullValueDataProvider
      * @param mixed $value
      * @param bool $multiple
      * @param int $format
@@ -92,5 +93,34 @@ class PhoneFieldTest extends TestCase
                 $resultCollection
             ];
         }
+    }
+
+    public static function nullValueDataProvider(): Generator
+    {
+        $cases = [
+            'single_valid_phone_null' => [null, '', null, null],
+            'single_valid_phone_empty' => ['', '', null, null],
+            'single_valid_phone_empty_space' => [' ', '', null, null],
+        ];
+
+        foreach ($cases as $name => $case) {
+            yield $name => [
+                $case[0],
+                false,
+                1,
+                $case[1],
+                $case[2],
+                $case[3],
+            ];
+        }
+
+        yield "valid_multiple_phone_null" => [
+            collect($cases)->map(fn($v) => $v[0])->values(),
+            true,
+            1,
+            collect($cases)->map(fn($v) => $v[1])->values(),
+            collect($cases)->map(fn($v) => $v[2])->values(),
+            collect($cases)->map(fn($v) => $v[3])->values(),
+        ];
     }
 }

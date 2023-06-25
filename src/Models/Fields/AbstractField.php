@@ -13,6 +13,11 @@ use Illuminate\Support\Collection;
 
 abstract class AbstractField implements FieldModel
 {
+    /**
+     * If true, empty strings or strings return empty string on trim()
+     */
+    public const IS_EMPTY_STRING_UNDEFINED = false;
+
     public function __construct(protected mixed $value, protected FieldSettings $settings)
     {
         if ($this->settings->multiple() && empty($this->value)) {
@@ -59,6 +64,13 @@ abstract class AbstractField implements FieldModel
      */
     protected function toMode(FieldGetMode $mode = null, mixed $value): mixed
     {
+        if ($this->isValueUndefined($value)) {
+            return match ($mode) {
+                FieldGetMode::String => '',
+                default => null
+            };
+        }
+
         return match ($mode) {
             FieldGetMode::Api => $this->toApi($value),
             FieldGetMode::String => $this->toString($value),
@@ -100,6 +112,22 @@ abstract class AbstractField implements FieldModel
     }
 
     /**
+     * Checks if value is undefined (null or empty)
+     *
+     * @param mixed $value
+     * @return bool
+     */
+    protected function isValueUndefined(mixed $value): bool
+    {
+        return is_null($value)
+            ? true
+            : (static::IS_EMPTY_STRING_UNDEFINED && is_string($value)
+                ? trim($value) === ''
+                : false
+            );
+    }
+
+    /**
      * Collects values converted to provided mode
      *
      * @param FieldGetMode|null $mode
@@ -130,16 +158,20 @@ abstract class AbstractField implements FieldModel
                 throw new InvalidValueTypeException("Multiple field must be array");
             }
             foreach ($value as $idx => $item) {
-                $this->validateOne($item, $idx);
+                $this->isValueUndefined($item) || $this->validateOne($item, $idx);
             }
         } else {
-            $this->validateOne($value);
+            $this->isValueUndefined($value) || $this->validateOne($value);
         }
     }
 
     public function __toString(): string
     {
-        return $this->toString();
+        $val = $this->get(FieldGetMode::String);
+
+        return $this->settings->multiple()
+            ? $val->toJson(JSON_UNESCAPED_UNICODE)
+            : (string) $val;
     }
 
     /**
