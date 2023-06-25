@@ -296,4 +296,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     {
         return static::select()->where($field, $operand, $value);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function collect(array|Collection $collection): Collection
+    {
+        return collect($collection)->map(fn($attributes) => static::make($attributes));
+    }
 }

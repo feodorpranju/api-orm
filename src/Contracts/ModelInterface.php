@@ -136,4 +136,13 @@ interface ModelInterface
      * @return static
      */
     public static function make(array|Collection $attributes = []): static;
+
+    /**
+     * Collects array|collection of fields arrays|collections to model collection
+     *
+     * @param array|Collection $collection
+     * @return Collection
+     * @see Make
+     */
+    public function collect(array|Collection $collection): Collection;
 }
