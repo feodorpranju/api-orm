@@ -4,14 +4,18 @@
 namespace Feodorpranju\ApiOrm\Models;
 
 
+use Feodorpranju\ApiOrm\Contracts\Http\ApiClientInterface;
 use Feodorpranju\ApiOrm\Contracts\ModelInterface;
+use Feodorpranju\ApiOrm\Contracts\ModelSearchableInterface;
 use Feodorpranju\ApiOrm\Contracts\QueryBuilderInterface;
 use Feodorpranju\ApiOrm\Exceptions\InstanceException;
-use Feodorpranju\ApiOrm\Exceptions\InvalidOperandException;
 use Feodorpranju\ApiOrm\Exceptions\InvalidOrderDirectionException;
+use Feodorpranju\ApiOrm\Support\ModelCollection;
 use Generator;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
+use JetBrains\PhpStorm\NoReturn;
 
 abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
@@ -24,6 +28,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
 
     protected string $orderField;
     protected string $orderDirection;
+    protected ?ModelSearchableInterface $modelInstance = null;
 
     /**
      * The number select starts at
@@ -60,7 +65,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
      */
     protected array $select = [];
 
-    public function __construct(protected string $model)
+    public function __construct(protected string $model, protected ?ApiClientInterface $client = null)
     {
         if (!is_a($model, ModelInterface::class, true)) {
             throw new InstanceException("Model '$model' is not instance of ".ModelInterface::class);
@@ -101,6 +106,10 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
             $tOperand = static::ON_UNDEFINED_OPERAND;
         }
 
+        if (is_object($tValue) && $tValue instanceof Arrayable) {
+            $tValue = $tValue->toArray();
+        }
+
         $this->conditions->push([$field, $tOperand, $tValue]);
         return $this;
     }
@@ -132,9 +141,9 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * @inheritdoc
      */
-    public function all(): Collection
+    public function all(): ModelCollection
     {
-        return $this->lazy()->collect();
+        return ModelCollection::make($this->lazy()->collect());
     }
 
     /**
@@ -231,7 +240,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
      */
     public function count(): int
     {
-        return ($this->model)::count($this->conditions);
+        return static::model()->count($this->conditions);
     }
 
     /**
@@ -248,9 +257,9 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * @inheritdoc
      */
-    public function get(): Collection
+    public function get(): ModelCollection
     {
-        return ($this->model)::find(
+        return static::model()->find(
             $this->conditions,
             $this->orderField ?? null,
             $this->orderDirection ?? null,
@@ -258,5 +267,80 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
             $this->offset,
             $this->chunkSize
         );
+    }
+
+    protected function getDebugInfo(): array
+    {
+        return [
+            'model' => $this->model,
+            'conditions' => $this->conditions->toArray(),
+            'select' => $this->select,
+            'limit' => $this->limit,
+            'chunkSize' => $this->chunkSize,
+            'order' => [
+                'field' => $this->orderField ?? null,
+                'direction' => $this->orderDirection ?? null
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    #[NoReturn]
+    public function dd(...$args): void
+    {
+        dd($this->getDebugInfo(), ...$args);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    #[NoReturn]
+    public function dump(...$args): static
+    {
+        dump($this->getDebugInfo(), ...$args);
+        return $this;
+    }
+
+    /**
+     * Gets current model instance
+     *
+     * @return ModelSearchableInterface
+     */
+    protected function model(): ModelSearchableInterface
+    {
+        if ($this->modelInstance) {
+            return $this->modelInstance;
+        }
+
+        $model = new $this->model;
+
+        if ($this->client) {
+            $model->setCleint($this->client);
+        }
+
+        return $this->modelInstance = $model;
+    }
+
+    public function setClient(?ApiClientInterface $client): static
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    /**
+     * @return ApiClientInterface|null
+     */
+    public function getClient(): ?ApiClientInterface
+    {
+        return $this->client;
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        return match ($name) {
+            'withClient' => $this->setClient(...$arguments)
+        };
     }
 }

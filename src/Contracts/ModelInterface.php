@@ -4,10 +4,13 @@
 namespace Feodorpranju\ApiOrm\Contracts;
 
 
+use ArrayAccess;
+use Feodorpranju\ApiOrm\Contracts\Http\ApiClientInterface;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Feodorpranju\ApiOrm\Enumerations\FieldGetMode;
 
-interface ModelInterface
+interface ModelInterface extends HasDumpInterface, Arrayable, ArrayAccess, HasClientInterface
 {
     /**
      * Creates Model and sets it's fields
@@ -20,16 +23,9 @@ interface ModelInterface
      * Gets record from bitrix24 as model
      *
      * @param int|string $id Entity id
-     * @return $this
+     * @return ModelInterface|null
      */
-    public static function get(int|string $id): static;
-
-    /**
-     * Returns entity name
-     *
-     * @return string
-     */
-    public static function entity(): string;
+    public function get(int|string $id): ?static;
 
     /**
      * Gets collection of field settings
@@ -37,7 +33,7 @@ interface ModelInterface
      * @return Collection
      * @see FieldSettings
      */
-    public static function fields(): Collection;
+    public function fields(): Collection;
 
     /**
      * Sets values by keys as field names
@@ -46,26 +42,6 @@ interface ModelInterface
      * @return $this
      */
     public function put(array|Collection $values): static;
-
-    /**
-     * Creates query builder object for current model
-     *
-     * @param array|null $fields
-     * @return QueryBuilderInterface
-     */
-    public static function select(array $fields = null): QueryBuilderInterface;
-
-    /**
-     * Creates query builder object for current model with condition
-     *
-     * @param string|array $field
-     * @param mixed|null $operand
-     * @param mixed|null $value
-     * @return QueryBuilderInterface
-     *
-     * @see QueryBuilderInterface::where()
-     */
-    public static function where(string|array $field, mixed $operand = null, mixed $value = null): QueryBuilderInterface;
 
     /**
      * @param string $name
@@ -93,34 +69,6 @@ interface ModelInterface
     public function except(array $names = [], ?FieldGetMode $mode = null): Collection;
 
     /**
-     * Finds items by filter
-     *
-     * @param array|Collection $conditions List of conditions [[field, operator, value]...]
-     * @param string|null $orderBy Field name
-     * @param string|null $orderDirection ASC|DESC
-     * @param array $select
-     * @param int $offset
-     * @param int $limit
-     * @return Collection|false
-     */
-    public static function find(
-        array|Collection $conditions = [],
-        string $orderBy = null,
-        string $orderDirection = null,
-        array $select = [],
-        int $offset = 0,
-        int $limit = 50
-    ): Collection|false;
-
-    /**
-     * Gets record count by filter
-     *
-     * @param array|Collection $conditions
-     * @return int
-     */
-    public static function count(array|Collection $conditions): int;
-
-    /**
      * Преобразует данные полей в массив
      *
      * @param FieldGetMode|null $mode
@@ -141,8 +89,9 @@ interface ModelInterface
      * Collects array|collection of fields arrays|collections to model collection
      *
      * @param array|Collection $collection
+     * @param ApiClientInterface|null $client
      * @return Collection
      * @see Make
      */
-    public static function collect(array|Collection $collection): Collection;
+    public function collect(array|Collection $collection, ?ApiClientInterface $client = null): Collection;
 }

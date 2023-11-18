@@ -33,7 +33,7 @@ class DateTimeField extends AbstractField
     {
         return empty($value)
             ? null
-            : new Carbon($value);
+            : new Carbon(is_numeric($value) ? date('c', (float)$value) :$value);
     }
 
     /**
@@ -64,6 +64,7 @@ class DateTimeField extends AbstractField
     {
         if (
             !is_string($value)
+            && !is_numeric($value)
             && !is_a($value, Carbon::class, true)
             && !is_a($value, DateTime::class, true)
             && !is_null($value)
