@@ -6,36 +6,54 @@ namespace Feodorpranju\ApiOrm\Http;
 
 use Feodorpranju\ApiOrm\Contracts\Http\ApiClientInterface;
 use Feodorpranju\ApiOrm\Contracts\Http\CredentialsInterface;
-use Feodorpranju\ApiOrm\Contracts\Http\ResponseInterface;
+use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
-class ApiClient implements ApiClientInterface
+abstract class AbstractApiClient implements ApiClientInterface
 {
     protected LoggerInterface $logger;
-    protected CredentialsInterface $credentials;
 
-    public function call(): ResponseInterface
+    public function __construct(protected ?CredentialsInterface $credentials = null)
     {
-        // TODO: Implement call() method.
     }
 
-    public function getCredentials(): CredentialsInterface
+    #[Pure]
+    public static function make(?CredentialsInterface $credentials = null): static
     {
-        // TODO: Implement getCredentials() method.
+        return new static($credentials);
     }
 
-    public function setCredentials(): void
+    /**
+     * Gets client's credentials
+     *
+     * @return CredentialsInterface|null
+     */
+    public function getCredentials(): ?CredentialsInterface
     {
-        // TODO: Implement setCredentials() method.
+        return $this->credentials;
     }
 
-    public function setLogger(): void
+    public function setCredentials(?CredentialsInterface $credentials): void
     {
-        // TODO: Implement setLogger() method.
+        $this->credentials = $credentials;
     }
 
+    /**
+     * Gets client's logger
+     *
+     * @return LoggerInterface
+     */
     public function getLogger(): LoggerInterface
     {
+        return $this->logger ??= new NullLogger();
+    }
 
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

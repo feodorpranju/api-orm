@@ -4,25 +4,66 @@
 namespace Feodorpranju\ApiOrm\Contracts\Http;
 
 
-use \Symfony\Contracts\HttpClient\ResponseInterface as SymfonyResponseInterface;
+use Feodorpranju\ApiOrm\Exceptions\Http\BaseHttpException;
+use Illuminate\Http\Client\Response;
 use Throwable;
 
 
 interface ResponseInterface
 {
-    public function __create(SymfonyResponseInterface $response);
+    public function __construct(Response $httpResponse, ?CommandInterface $command = null);
 
-    public static function make(SymfonyResponseInterface $response);
+    /**
+     * @param Response $response
+     * @param CommandInterface|null $command
+     * @return static
+     */
+    public static function make(Response $response, ?CommandInterface $command): static;
 
-    public function getResult(): array;
+    /**
+     * Gets formatted response
+     *
+     * @return array|object
+     */
+    public function getResult(): array|object;
 
-    public function getCommand(): CommandInterface;
+    /**
+     * Gets executed command
+     *
+     * @return CommandInterface|null
+     */
+    public function getCommand(): ?CommandInterface;
 
-    public function getHttpResponse(): SymfonyResponseInterface;
+    /**
+     * Gets HTTP response
+     *
+     * @return Response
+     */
+    public function getHttpResponse(): Response;
 
-    public function success(): bool;
+    /**
+     * Check is http response has good http code
+     *
+     * @return bool
+     */
+    public function successful(): bool;
 
-    public function fail(): bool;
+    /**
+     * Check is http response has bad http code
+     *
+     * @return bool
+     */
+    public function failed(): bool;
 
-    public function getException(): Throwable;
+    /**
+     * Gets HTTP exception by code
+     *
+     * @return Throwable|null
+     */
+    public function toException(): ?Throwable;
+
+    /**
+     * @throws BaseHttpException
+     */
+    public function throw(): void;
 }

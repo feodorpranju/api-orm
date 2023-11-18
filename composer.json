@@ -12,14 +12,14 @@
         "illuminate/collections": "^10.4",
         "illuminate/contracts": "^10.4",
         "nesbot/carbon": "^2.66",
-        "illuminate/support": "^10.4",
+        "illuminate/support": "^10.22",
         "brick/phonenumber": "^0.5.0",
         "egulias/email-validator": "^4.0",
         "psr/log": "^1.1.4 || ^2.0 || ^3.0",
-        "fig/http-message-util": "1.1.*",
-        "symfony/http-client": "5.4.* || 6.*",
-        "symfony/http-client-contracts": "^2.5 || ^3.1",
-        "symfony/http-foundation": "5.4.* || 6.*"
+        "illuminate/container": "^10.22",
+        "illuminate/http": "^10.22",
+        "guzzlehttp/guzzle": "^6.2.1",
+        "illuminate/log": "^10.22"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",

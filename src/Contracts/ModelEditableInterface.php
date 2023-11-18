@@ -14,12 +14,4 @@ interface ModelEditableInterface extends ModelInterface
      * @return ModelEditableInterface
      */
     public function save(): static;
-
-    /**
-     * Creates new record
-     *
-     * @param array|Collection $fields
-     * @return static
-     */
-    public static function create(array|Collection $fields): static;
 }

@@ -4,19 +4,18 @@
 namespace Feodorpranju\ApiOrm\Models;
 
 
-use ArrayAccess;
+use Feodorpranju\ApiOrm\Contracts\Http\ApiClientInterface;
 use Feodorpranju\ApiOrm\Contracts\ModelInterface;
-use Feodorpranju\ApiOrm\Contracts\QueryBuilderInterface;
 use Feodorpranju\ApiOrm\Models\Fields\DefaultField;
 use Feodorpranju\ApiOrm\Models\Fields\Settings;
 use Feodorpranju\ApiOrm\Enumerations\FieldType;
 use Feodorpranju\ApiOrm\Enumerations\FieldGetMode;
-use Illuminate\Contracts\Support\Arrayable;
+use Feodorpranju\ApiOrm\Support\ModelCollection;
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\NoReturn;
 
-abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
+abstract class AbstractModel implements ModelInterface
 {
-    protected static string $_entity = "";
     protected Collection $_attributes;
     protected Collection $_rawAttributes;
     protected static Collection $_fields;
@@ -24,6 +23,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     protected const SET_FIELDS_ON_CONSTRUCT = false;
     protected const DEFAULT_GET_MODE = FieldGetMode::Usable;
     protected static array $_readonlyFields;
+    /**
+     * @var ApiClientInterface|mixed|null
+     */
+
+    protected ?ApiClientInterface $client = null;
 
     /**
      * @inheritdoc
@@ -41,23 +45,15 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     /**
      * @inheritdoc
      */
-    public static function make(array|Collection $attributes = []): static
+    public static function make(array|Collection $attributes = [], ?ApiClientInterface $client = null): static
     {
-        return new static($attributes);
+        return (new static($attributes))->setClient($client);
     }
 
     /**
      * @inheritdoc
      */
-    public static function entity(): string
-    {
-        return static::$_entity;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function fields(): Collection
+    public function fields(): Collection
     {
         return static::$_fields ??= collect([]);
     }
@@ -146,30 +142,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     {
         return $this->only($this->updatedFields, $mode)
             ->except(static::getReadonlyFields());
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public static function find(
-        array|Collection $conditions = [],
-        string $orderBy = null,
-        string $orderDirection = null,
-        array $select = [],
-        int $offset = 0,
-        int $limit = 50
-    ): Collection
-    {
-        return collect([]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function count(array|Collection $conditions): int
-    {
-        return 0;
     }
 
     /**
@@ -274,34 +246,64 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, Arrayable
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    public static function get(int|string $id): static
+    public function collect(array|Collection $collection, ?ApiClientInterface $client = null): ModelCollection
     {
-        // TODO: Implement get() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function select(array $fields = null): QueryBuilderInterface
-    {
-        return (new DefaultQueryBuilder(static::class))->select($fields ?? []);
+        return ModelCollection::make($collection)->map(
+            fn($attributes) => static::make($attributes, $client ?? $this->getClient())
+        );
     }
 
     /**
      * @inheritdoc
      */
-    public static function where(array|string $field, mixed $operand = null, mixed $value = null): QueryBuilderInterface
+    public function setClient(?ApiClientInterface $client): static
     {
-        return static::select()->where($field, $operand, $value);
+        $this->client = $client;
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public static function collect(array|Collection $collection): Collection
+    public function getClient(): ?ApiClientInterface
     {
-        return collect($collection)->map(fn($attributes) => static::make($attributes));
+        return $this->client ??= static::$defaultClient ?? null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    #[NoReturn]
+    public function dd(...$args): void
+    {
+        dd($this->toArray(), ...$args);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    #[NoReturn]
+    public function dump(...$args): static
+    {
+        dump($this->toArray(), ...$args);
+        return $this;
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        return match ($name) {
+            'withClient' => $this->setClient(...$arguments),
+            default => null
+        };
+    }
+
+    public static function __callStatic(string $name, array $arguments)
+    {
+        return match ($name) {
+            'withClient' => static::make()->setClient(...$arguments),
+            default => null
+        };
     }
 }

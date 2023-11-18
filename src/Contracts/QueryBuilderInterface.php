@@ -4,12 +4,19 @@
 namespace Feodorpranju\ApiOrm\Contracts;
 
 
+use Feodorpranju\ApiOrm\Contracts\Http\ApiClientInterface;
 use Feodorpranju\ApiOrm\Exceptions\InvalidOrderDirectionException;
-use Illuminate\Support\Collection;
+use Feodorpranju\ApiOrm\Support\ModelCollection;
 use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\LazyCollection;
 
-interface QueryBuilderInterface
+/**
+ * Interface QueryBuilderInterface
+ * @package Feodorpranju\ApiOrm\Contracts
+ *
+ * @method static static withClient(ApiClientInterface $client)
+ */
+interface QueryBuilderInterface extends HasDumpInterface, HasClientInterface
 {
     /**
      * Sets fields to be selected
@@ -59,9 +66,9 @@ interface QueryBuilderInterface
     /**
      * Gets all items for select.
      *
-     * @return Collection
+     * @return ModelCollection
      */
-    public function all(): Collection;
+    public function all(): ModelCollection;
 
     /**
      * Gets lazy collection for select.
@@ -128,7 +135,7 @@ interface QueryBuilderInterface
     /**
      * Gets collection for current offset and chunkSize
      *
-     * @return Collection
+     * @return ModelCollection
      */
-    public function get(): Collection;
+    public function get(): ModelCollection;
 }
