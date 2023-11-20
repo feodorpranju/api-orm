@@ -18,7 +18,7 @@
         "psr/log": "^1.1.4 || ^2.0 || ^3.0",
         "illuminate/container": "^10.22",
         "illuminate/http": "^10.22",
-        "guzzlehttp/guzzle": "^6.2.1",
+        "guzzlehttp/guzzle": "^6.2.1|^7.0.1",
         "illuminate/log": "^10.22"
     },
     "require-dev": {
@@ -27,7 +27,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Feodorpranju\\ApiOrm\\": "src"
+            "Feodorpranju\\ApiOrm\\": "src",
+            "Feodorpranju\\Bitrix24\\SDK\\": "bitrix",
+            "Feodorpranju\\ClickUp\\SDK\\": "clickup"
         },
         "files": [
             "src/helpers.php"
